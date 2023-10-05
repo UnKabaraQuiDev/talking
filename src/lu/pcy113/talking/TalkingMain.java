@@ -1,6 +1,7 @@
 package lu.pcy113.talking;
 
 import lu.pcy113.talking.client.TalkingClient;
+import lu.pcy113.talking.consts.Consts;
 import lu.pcy113.talking.server.TalkingServer;
 
 public class TalkingMain {

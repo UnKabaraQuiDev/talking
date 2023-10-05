@@ -6,6 +6,7 @@ import lu.pcy113.p4j.socket.server.ServerClient;
 import lu.pcy113.talking.TalkingMain;
 import lu.pcy113.talking.data.UserData;
 import lu.pcy113.talking.server.TalkingServer;
+import lu.pcy113.talking.server.client.TalkingServerClient;
 
 public class HandshakePacket implements C2SPacket<UserData> {
 	
@@ -22,7 +23,7 @@ public class HandshakePacket implements C2SPacket<UserData> {
 
 	@Override
 	public void serverRead(ServerClient sclient, UserData obj) {
-		((TalkingServer) TalkingMain.getInstance()).incomingHandshake(sclient, obj);
+		((TalkingServer) TalkingMain.getInstance()).incomingHandshake((TalkingServerClient) sclient, obj);
 	}
 
 }

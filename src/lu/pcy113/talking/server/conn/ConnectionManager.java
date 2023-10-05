@@ -18,7 +18,6 @@ public class ConnectionManager {
 		return connectionVerifier.stream().allMatch(v -> v.getValue() ? v.getKey().verify(tsclient) : true);
 	}
 	public void add(TalkingServerClient tsclient) {
-		// TODO Auto-generated method stub
 		
 	}
 	

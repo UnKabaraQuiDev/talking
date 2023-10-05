@@ -1,4 +1,4 @@
-package lu.pcy113.talking;
+package lu.pcy113.talking.consts;
 
 public final class Consts {
 	
