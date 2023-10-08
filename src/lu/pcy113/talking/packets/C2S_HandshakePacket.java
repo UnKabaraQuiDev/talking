@@ -8,11 +8,11 @@ import lu.pcy113.talking.data.UserData;
 import lu.pcy113.talking.server.TalkingServer;
 import lu.pcy113.talking.server.client.TalkingServerClient;
 
-public class HandshakePacket implements C2SPacket<UserData> {
+public class C2S_HandshakePacket implements C2SPacket<UserData> {
 	
 	private UserData userData;
 	
-	public HandshakePacket(UserData userData) {
+	public C2S_HandshakePacket(UserData userData) {
 		this.userData = userData;
 	}
 
