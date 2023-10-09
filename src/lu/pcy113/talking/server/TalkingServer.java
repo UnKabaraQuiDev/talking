@@ -2,7 +2,6 @@ package lu.pcy113.talking.server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.List;
 
 import lu.pcy113.jb.codec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
@@ -13,10 +12,6 @@ import lu.pcy113.talking.TalkingInstance;
 import lu.pcy113.talking.consts.Codecs;
 import lu.pcy113.talking.consts.Packets;
 import lu.pcy113.talking.data.UserData;
-<<<<<<< HEAD
-=======
-import lu.pcy113.talking.packets.C2S_HandshakePacket;
->>>>>>> 70597b09714e80605a21b1feaa9e495aefc29790
 import lu.pcy113.talking.packets.S2C_LoginPacket;
 import lu.pcy113.talking.packets.S2C_LoginRefusedPacket;
 import lu.pcy113.talking.server.client.TalkingServerClient;
@@ -48,15 +43,7 @@ public class TalkingServer implements TalkingInstance {
 		this.server = new P4JServer(codec, encryption, compression);
 		this.server.setClientManager(new ClientManager(server, (socket) -> new TalkingServerClient(socket, this.server, this)));
 		
-<<<<<<< HEAD
 		Packets.registerPackets(server.getPackets());
-=======
-		registerPackets();
-	}
-	
-	protected void registerPackets() {
-		server.registerPacket(C2S_HandshakePacket.class, 0x01);
->>>>>>> 70597b09714e80605a21b1feaa9e495aefc29790
 	}
 	
 	public void connect() throws IOException {
