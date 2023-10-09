@@ -11,7 +11,7 @@ import lu.pcy113.p4j.socket.server.P4JServer;
 import lu.pcy113.talking.TalkingInstance;
 import lu.pcy113.talking.consts.Codecs;
 import lu.pcy113.talking.consts.Packets;
-import lu.pcy113.talking.data.UserData;
+import lu.pcy113.talking.packets.C2S_HandshakePacket.HandShakeData;
 import lu.pcy113.talking.packets.S2C_LoginPacket;
 import lu.pcy113.talking.packets.S2C_LoginRefusedPacket;
 import lu.pcy113.talking.server.client.TalkingServerClient;
@@ -50,10 +50,10 @@ public class TalkingServer implements TalkingInstance {
 		server.bind(new InetSocketAddress(host, port));
 	}
 
-	public void incomingHandshake(TalkingServerClient sclient, UserData obj) {
+	public void incomingHandshake(TalkingServerClient sclient, HandShakeData obj) {
 		boolean accept = connectionManager.verify(sclient);
 		if(accept) {
-			sclient.write(new S2C_LoginPacket(serverData.getView(obj)));
+			sclient.write(new S2C_LoginPacket(serverData.getView(obj.userData)));
 		}else {
 			sclient.write(new S2C_LoginRefusedPacket());
 			sclient.close();
