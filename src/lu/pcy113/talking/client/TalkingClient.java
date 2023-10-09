@@ -8,8 +8,9 @@ import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
 import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.talking.TalkingInstance;
+import lu.pcy113.talking.consts.Packets;
 import lu.pcy113.talking.data.UserData;
-import lu.pcy113.talking.packets.HandshakePacket;
+import lu.pcy113.talking.packets.C2S_HandshakePacket;
 import lu.pcy113.talking.server.data.ServerDataView;
 
 public class TalkingClient implements TalkingInstance {
@@ -36,17 +37,13 @@ public class TalkingClient implements TalkingInstance {
 		
 		client = new P4JClient(codec, encryption, compression);
 		
-		registerPackets();
-	}
-	
-	protected void registerPackets() {
-		client.registerPacket(HandshakePacket.class, 0x01);
+		Packets.registerPackets(client.getPackets());
 	}
 	
 	public void connect() throws IOException {
 		client.connect(new InetSocketAddress(host, port));
 		
-		client.write(new HandshakePacket(userData));
+		client.write(new C2S_HandshakePacket(userData));
 	}
 	
 	public String getHost() {return host;}

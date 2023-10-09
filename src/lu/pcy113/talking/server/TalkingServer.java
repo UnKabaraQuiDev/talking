@@ -9,11 +9,10 @@ import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
 import lu.pcy113.p4j.socket.server.ClientManager;
 import lu.pcy113.p4j.socket.server.P4JServer;
-import lu.pcy113.p4j.socket.server.ServerClient;
 import lu.pcy113.talking.TalkingInstance;
 import lu.pcy113.talking.consts.Codecs;
+import lu.pcy113.talking.consts.Packets;
 import lu.pcy113.talking.data.UserData;
-import lu.pcy113.talking.packets.HandshakePacket;
 import lu.pcy113.talking.packets.S2C_LoginPacket;
 import lu.pcy113.talking.packets.S2C_LoginRefusedPacket;
 import lu.pcy113.talking.server.client.TalkingServerClient;
@@ -25,8 +24,6 @@ public class TalkingServer implements TalkingInstance {
 	private String host;
 	private int port;
 	private P4JServer server;
-	
-	private List<UserData> connectedUsers;
 	
 	private CodecManager codec;
 	private EncryptionManager encryption;
@@ -47,11 +44,7 @@ public class TalkingServer implements TalkingInstance {
 		this.server = new P4JServer(codec, encryption, compression);
 		this.server.setClientManager(new ClientManager(server, (socket) -> new TalkingServerClient(socket, this.server, this)));
 		
-		registerPackets();
-	}
-	
-	protected void registerPackets() {
-		server.registerPacket(HandshakePacket.class, 0x01);
+		Packets.registerPackets(server.getPackets());
 	}
 	
 	public void connect() throws IOException {
