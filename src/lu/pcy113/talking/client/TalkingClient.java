@@ -37,7 +37,15 @@ public class TalkingClient implements TalkingInstance {
 		
 		client = new P4JClient(codec, encryption, compression);
 		
+<<<<<<< HEAD
 		Packets.registerPackets(client.getPackets());
+=======
+		registerPackets();
+	}
+	
+	protected void registerPackets() {
+		client.registerPacket(C2S_HandshakePacket.class, 0x01);
+>>>>>>> 70597b09714e80605a21b1feaa9e495aefc29790
 	}
 	
 	public void connect() throws IOException {
