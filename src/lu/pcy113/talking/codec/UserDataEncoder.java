@@ -23,7 +23,7 @@ public class UserDataEncoder extends DefaultObjectEncoder<UserData> {
 		byte[] bb2 = cm.encode(false, obj.getHash()).array();
 		byte[] bb3 = cm.encode(false, obj.getPrivateKey()).array();
 		byte[] bb4 = cm.encode(false, obj.getPublicKey()).array();
-		return ByteBuffer.allocateDirect(bb1.length+bb2.length+bb3.length+bb4.length).put(bb1).put(bb2).put(bb3).put(bb4).flip();
+		return (ByteBuffer) ByteBuffer.allocateDirect(bb1.length+bb2.length+bb3.length+bb4.length).put(bb1).put(bb2).put(bb3).put(bb4).flip();
 	}
 
 }
