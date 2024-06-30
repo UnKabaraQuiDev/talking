@@ -3,7 +3,7 @@ package lu.pcy113.talking.server.conn;
 import java.util.ArrayList;
 import java.util.List;
 
-import lu.pcy113.jb.utils.Pair;
+import lu.pcy113.pclib.datastructure.pair.Pair;
 import lu.pcy113.talking.server.client.TalkingServerClient;
 import lu.pcy113.talking.server.conn.verifier.BlacklistConnectionVerifier;
 

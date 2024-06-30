@@ -3,7 +3,7 @@ package lu.pcy113.talking.server;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-import lu.pcy113.jb.codec.CodecManager;
+import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
 import lu.pcy113.p4j.socket.server.ClientManager;

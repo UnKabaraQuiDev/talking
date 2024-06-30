@@ -1,6 +1,6 @@
 package lu.pcy113.talking.consts;
 
-import lu.pcy113.jb.codec.CodecManager;
+import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.talking.codec.HandShakeDataDecoder;
 import lu.pcy113.talking.codec.HandShakeDataEncoder;
 import lu.pcy113.talking.codec.ServerDataViewDecoder;
