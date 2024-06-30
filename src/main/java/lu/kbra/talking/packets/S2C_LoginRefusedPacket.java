@@ -6,6 +6,9 @@ import lu.pcy113.p4j.socket.server.ServerClient;
 
 public class S2C_LoginRefusedPacket implements S2CPacket {
 
+	public S2C_LoginRefusedPacket() {
+	}
+
 	@Override
 	public Object serverWrite(ServerClient client) {
 		// TODO Auto-generated method stub

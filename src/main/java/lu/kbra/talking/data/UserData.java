@@ -7,11 +7,11 @@ public class UserData {
 	private String privateKey;
 	private String publicKey;
 	
-	public UserData(String userName2, String hash2, String privateKey2, String publicKey2) {
-		this.userName = userName2;
-		this.hash = hash2;
-		this.privateKey = privateKey2;
-		this.publicKey = publicKey2;
+	public UserData(String userName, String hash, String privateKey, String publicKey) {
+		this.userName = userName;
+		this.hash = hash;
+		this.privateKey = privateKey;
+		this.publicKey = publicKey;
 	}
 	
 	public String getUserName() {

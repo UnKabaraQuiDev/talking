@@ -10,8 +10,21 @@ public class ServerDataViewEncoder extends DefaultObjectEncoder<ServerDataView> 
 
 	@Override
 	public ByteBuffer encode(boolean head, ServerDataView obj) {
-		// TODO Auto-generated method stub
-		return null;
+		final int length = estimateSize(head, obj);
+		final ByteBuffer bb = ByteBuffer.allocate(length);
+
+		super.putHeader(head, bb);
+
+		bb.put(cm.encode(false, obj.getChannels()));
+
+		bb.flip();
+
+		return bb;
+	}
+
+	@Override
+	public int estimateSize(boolean head, ServerDataView obj) {
+		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getChannels());
 	}
 
 }

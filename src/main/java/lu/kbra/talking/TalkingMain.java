@@ -24,7 +24,7 @@ public class TalkingMain {
 		}
 
 		if (args.length < 2) {
-			System.out.println("Usage: java -jar TalkingMain.jar <type [server|client]> <host>:<port>");
+			GlobalLogger.info("Usage: java -jar TalkingMain.jar <type [server|client]> <host>:<port>");
 			return;
 		}
 
@@ -44,11 +44,11 @@ public class TalkingMain {
 
 		switch (type) {
 		case SERVER:
-			System.out.println("Starting server on: " + host + ":" + port);
+			GlobalLogger.info("Starting server on: " + host + ":" + port);
 			instance = new TalkingServer(host, port);
 			break;
 		case CLIENT:
-			System.out.println("Starting client to: " + host + ":" + port);
+			GlobalLogger.info("Starting client to: " + host + ":" + port);
 			instance = new TalkingClient(host, port);
 			break;
 		}

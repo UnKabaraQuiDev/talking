@@ -9,6 +9,7 @@ import lu.pcy113.p4j.crypto.EncryptionManager;
 import lu.pcy113.p4j.socket.client.P4JClient;
 
 import lu.kbra.talking.TalkingInstance;
+import lu.kbra.talking.consts.Codecs;
 import lu.kbra.talking.consts.Packets;
 import lu.kbra.talking.data.UserData;
 import lu.kbra.talking.packets.C2S_HandshakePacket;
@@ -28,20 +29,26 @@ public class TalkingClient implements TalkingInstance {
 	
 	private ServerDataView serverData;
 	
-	public TalkingClient(String host, int port) {
+	public TalkingClient(String host, int port) throws IOException {
 		this.host = host;
 		this.port = port;
 		
-		codec = CodecManager.base();
+		codec = Codecs.instance();
 		encryption = EncryptionManager.raw();
 		compression = CompressionManager.raw();
+		
+		this.userData = new UserData("name", "hash", "public", "private");
 		
 		client = new P4JClient(codec, encryption, compression);
 		
 		Packets.registerPackets(client.getPackets());
+		
+		connect();
 	}
 	
 	public void connect() throws IOException {
+		client.bind();
+		
 		client.connect(new InetSocketAddress(host, port));
 		
 		client.write(new C2S_HandshakePacket(userData));

@@ -2,6 +2,7 @@ package lu.kbra.talking.codec;
 
 import java.nio.ByteBuffer;
 
+import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.jbcodec.encoder.DefaultObjectEncoder;
 
 import lu.kbra.talking.packets.C2S_HandshakePacket.HandShakeData;
@@ -14,9 +15,21 @@ public class HandShakeDataEncoder extends DefaultObjectEncoder<HandShakeData> {
 
 	@Override
 	public ByteBuffer encode(boolean head, HandShakeData obj) {
-		byte[] bb1 = cm.encode(false, obj.version).array();
-		byte[] bb2 = cm.encode(false, obj.userData).array();
-		return (ByteBuffer) ByteBuffer.allocateDirect(bb1.length+bb2.length).put(bb1).put(bb2).flip();
+		final int length = estimateSize(head, obj);
+		final ByteBuffer bb = ByteBuffer.allocate(length);
+
+		putHeader(head, bb);
+
+		bb.put(cm.encode(false, obj.version));
+		bb.put(cm.encode(false, obj.userData));
+		bb.flip();
+
+		return bb;
+	}
+
+	@Override
+	public int estimateSize(boolean head, HandShakeData obj) {
+		return (head ? CodecManager.HEAD_SIZE : 0) + cm.estimateSize(false, obj.version) + cm.estimateSize(false, obj.userData);
 	}
 
 }
