@@ -4,7 +4,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>lu.unbakaraquidev</groupId>
+	<groupId>lu.kbra</groupId>
 	<artifactId>talking</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
@@ -18,13 +18,34 @@
 		<local.jar.path>
 			${project.basedir}/target/${project.artifactId}-${project.version}.jar</local.jar.path>
 		<local.pom.path>${project.basedir}/pom.xml</local.pom.path>
+		<exec.type>client</exec.type>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>client</id>
+			<properties>
+				<exec.type>client</exec.type>
+			</properties>
+		</profile>
+		<profile>
+			<id>server</id>
+			<properties>
+				<exec.type>server</exec.type>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
 			<groupId>lu.pcy113</groupId>
 			<artifactId>packets4j</artifactId>
-			<version>[pre-release_0.6,pre-release_0.7)</version>
+			<version>pre-release_0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>lu.pcy113</groupId>
+			<artifactId>PCLib</artifactId>
+			<version>0.7</version>
 		</dependency>
 	</dependencies>
 
@@ -54,6 +75,22 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<executable>java</executable>
+					<arguments>
+						<argument>-cp</argument>
+						<classpath />
+						<argument>lu.kbra.talking.TalkingMain</argument>
+						<argument>${exec.type}</argument>
+						<argument>localhost:8000</argument>
+					</arguments>
+				</configuration>
 			</plugin>
 
 			<!--<plugin>
