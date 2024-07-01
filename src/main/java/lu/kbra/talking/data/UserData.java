@@ -1,30 +1,40 @@
 package lu.kbra.talking.data;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 public class UserData {
-	
+
 	private String userName;
 	private String hash;
-	private String privateKey;
-	private String publicKey;
-	
-	public UserData(String userName, String hash, String privateKey, String publicKey) {
+	private PublicKey publicKey;
+	private PrivateKey privateKey;
+
+	public UserData(String userName, String hash, PublicKey publicKey2, PrivateKey privateKey2) {
 		this.userName = userName;
 		this.hash = hash;
-		this.privateKey = privateKey;
-		this.publicKey = publicKey;
+		this.publicKey = publicKey2;
+		this.privateKey = privateKey2;
 	}
-	
+
+	public UserData getPublicUserData() {
+		return new UserData(userName, hash, publicKey, null);
+	}
+
 	public String getUserName() {
 		return userName;
 	}
+
 	public String getHash() {
 		return hash;
 	}
-	public String getPrivateKey() {
-		return privateKey;
-	}
-	public String getPublicKey() {
+
+	public PublicKey getPublicKey() {
 		return publicKey;
 	}
-	
+
+	public PrivateKey getPrivateKey() {
+		return privateKey;
+	}
+
 }

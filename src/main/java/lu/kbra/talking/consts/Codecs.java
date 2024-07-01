@@ -10,6 +10,8 @@ import lu.kbra.talking.codec.ChannelDecoder;
 import lu.kbra.talking.codec.ChannelEncoder;
 import lu.kbra.talking.codec.HandShakeDataDecoder;
 import lu.kbra.talking.codec.HandShakeDataEncoder;
+import lu.kbra.talking.codec.RSAPublicKeyDecoder;
+import lu.kbra.talking.codec.RSAPublicKeyEncoder;
 import lu.kbra.talking.codec.ServerDataViewDecoder;
 import lu.kbra.talking.codec.ServerDataViewEncoder;
 import lu.kbra.talking.codec.UserDataDecoder;
@@ -27,6 +29,7 @@ public class Codecs {
 		codec.register(new ServerDataViewEncoder(), new ServerDataViewDecoder(), (short) 21);
 		codec.register(new HandShakeDataEncoder(), new HandShakeDataDecoder(), (short) 22);
 		codec.register(new ChannelEncoder(), new ChannelDecoder(), (short) 23);
+		codec.register(new RSAPublicKeyEncoder(), new RSAPublicKeyDecoder(), (short) 24);
 
 		return codec;
 	}

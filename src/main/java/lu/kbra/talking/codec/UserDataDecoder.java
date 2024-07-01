@@ -1,10 +1,11 @@
 package lu.kbra.talking.codec;
 
 import java.nio.ByteBuffer;
-
-import lu.pcy113.jbcodec.decoder.DefaultObjectDecoder;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import lu.kbra.talking.data.UserData;
+import lu.pcy113.jbcodec.decoder.DefaultObjectDecoder;
 
 public class UserDataDecoder extends DefaultObjectDecoder<UserData> {
 
@@ -14,10 +15,10 @@ public class UserDataDecoder extends DefaultObjectDecoder<UserData> {
 		
 		String userName = (String) cm.getDecoderByClass(String.class).decode(false, bb);
 		String hash = (String) cm.getDecoderByClass(String.class).decode(false, bb);
-		String privateKey = (String) cm.getDecoderByClass(String.class).decode(false, bb);
-		String publicKey = (String) cm.getDecoderByClass(String.class).decode(false, bb);
+		PublicKey publicKey = (PublicKey) cm.decode(bb);
+		PrivateKey privateKey = (PrivateKey) cm.decode(bb);
 		
-		return new UserData(userName, hash, privateKey, publicKey);
+		return new UserData(userName, hash, publicKey, privateKey);
 	}
 	
 }

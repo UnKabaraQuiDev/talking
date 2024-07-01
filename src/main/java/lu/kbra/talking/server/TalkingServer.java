@@ -71,6 +71,7 @@ public class TalkingServer implements TalkingInstance {
 	public void incomingHandshake(TalkingServerClient sclient, HandShakeData obj) {
 		boolean accept = connectionManager.verify(sclient);
 		if (accept) {
+			sclient.setUserData(obj.userData);
 			sclient.write(new S2C_LoginPacket(serverData.getView(obj.userData)));
 		} else {
 			sclient.write(new S2C_LoginRefusedPacket());

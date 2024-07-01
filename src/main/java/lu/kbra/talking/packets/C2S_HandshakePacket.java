@@ -34,18 +34,15 @@ public class C2S_HandshakePacket implements C2SPacket<HandShakeData> {
 
 	public C2S_HandshakePacket(UserData userData) {
 		this.handShakeData = new HandShakeData(userData);
-		System.err.println("init usr data: " + userData + " = " + handShakeData);
 	}
 
 	@Override
 	public HandShakeData clientWrite(P4JClient client) {
-		System.err.println("send: " + handShakeData);
 		return handShakeData;
 	}
 
 	@Override
 	public void serverRead(ServerClient sclient, HandShakeData obj) {
-		System.err.println(obj);
 		((TalkingServer) TalkingMain.getInstance()).incomingHandshake((TalkingServerClient) sclient, obj);
 	}
 
