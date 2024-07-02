@@ -2,18 +2,17 @@ package lu.kbra.talking.server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.Optional;
 
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
 import lu.pcy113.p4j.socket.server.ClientManager;
 import lu.pcy113.p4j.socket.server.P4JServer;
+import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.datastructure.pair.Pair;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
-import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.consts.Codecs;
 import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.consts.Packets;
@@ -67,7 +66,8 @@ public class TalkingServer implements TalkingInstance {
 		sclient.setUserData(obj.userData);
 		Pair<Boolean, String> refusalReason = connectionManager.verify(sclient);
 		if (refusalReason.getKey()) {
-			sclient.setUserData(obj.userData);
+			GlobalLogger.info("Accepted connection: " + sclient.getUUID() + " = '" + sclient.getUserData().getUserName() + "' @ "
+					+ PCUtils.try_(() -> sclient.getSocketChannel().getRemoteAddress(), (e) -> e.getClass().getName() + ": " + e.getMessage()));
 			sclient.write(new S2C_LoginPacket(serverData.getView(obj.userData)));
 		} else {
 			GlobalLogger.info("Refused connection: " + refusalReason.getValue());

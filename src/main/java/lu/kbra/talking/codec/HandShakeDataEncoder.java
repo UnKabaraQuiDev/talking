@@ -20,7 +20,6 @@ public class HandShakeDataEncoder extends DefaultObjectEncoder<HandShakeData> {
 
 		putHeader(head, bb);
 
-		bb.put(cm.encode(false, obj.version));
 		bb.put(cm.encode(false, obj.userData));
 		bb.flip();
 
@@ -29,7 +28,7 @@ public class HandShakeDataEncoder extends DefaultObjectEncoder<HandShakeData> {
 
 	@Override
 	public int estimateSize(boolean head, HandShakeData obj) {
-		return (head ? CodecManager.HEAD_SIZE : 0) + cm.estimateSize(false, obj.version) + cm.estimateSize(false, obj.userData);
+		return (head ? CodecManager.HEAD_SIZE : 0) + cm.estimateSize(false, obj.userData);
 	}
 
 }
