@@ -2,7 +2,7 @@ package lu.kbra.talking.client;
 
 import java.util.Scanner;
 
-import lu.kbra.talking.packets.C2S_SendPacket;
+import lu.kbra.talking.packets.C2S_MessagePacket;
 
 public class ConsoleClient extends Thread implements Runnable {
 
@@ -31,7 +31,7 @@ public class ConsoleClient extends Thread implements Runnable {
 	}
 
 	private void sendCommand(String txt) {
-		TalkingClient.INSTANCE.getClient().write(new C2S_SendPacket(txt));
+		TalkingClient.INSTANCE.getClient().write(new C2S_MessagePacket(txt));
 	}
 
 }

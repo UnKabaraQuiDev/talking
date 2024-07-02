@@ -10,6 +10,7 @@ import lu.pcy113.p4j.socket.server.ClientManager;
 import lu.pcy113.p4j.socket.server.P4JServer;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.datastructure.pair.Pair;
+import lu.pcy113.pclib.listener.AsyncEventManager;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
@@ -54,6 +55,8 @@ public class TalkingServer implements TalkingInstance {
 
 		this.server = new P4JServer(codec, encryption, compression);
 		this.server.setClientManager(new ClientManager(server, (socket) -> new TalkingServerClient(socket, this.server, this)));
+
+		this.server.setEventManager(new AsyncEventManager(false));
 		this.server.getEventManager().register(new DefaultServerListener());
 
 		Packets.registerPackets(server.getPackets());
