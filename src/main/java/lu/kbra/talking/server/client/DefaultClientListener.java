@@ -1,19 +1,19 @@
-package lu.kbra.talking.server;
+package lu.kbra.talking.server.client;
 
 import lu.pcy113.p4j.events.C2SReadPacketEvent;
 import lu.pcy113.p4j.events.ClientConnectedEvent;
 import lu.pcy113.p4j.events.ClosedSocketEvent;
 import lu.pcy113.p4j.events.S2CWritePacketEvent;
-import lu.pcy113.p4j.socket.server.ServerClient;
+import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.listener.EventHandler;
 import lu.pcy113.pclib.listener.EventListener;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
-public class DefaultServerListener implements EventListener {
+public class DefaultClientListener implements EventListener {
 
 	@EventHandler
 	public void onConnect(ClientConnectedEvent event) {
-		GlobalLogger.log("connected: " + ((ServerClient) event.getClient()).getUUID());
+		GlobalLogger.log("connected: " + ((P4JClient) event.getClient()));
 	}
 
 	@EventHandler
@@ -34,7 +34,7 @@ public class DefaultServerListener implements EventListener {
 
 	@EventHandler
 	public void onDisconnect(ClosedSocketEvent event) {
-		GlobalLogger.log("disconnected: " + ((ServerClient) event.getClient()).getUUID());
+		GlobalLogger.log("disconnected: " + ((P4JClient) event.getClient()));
 	}
 
 }

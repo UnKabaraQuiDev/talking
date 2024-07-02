@@ -1,37 +1,35 @@
 package lu.kbra.talking.server;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.Optional;
 
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
-import lu.pcy113.p4j.events.ClientConnectedEvent;
 import lu.pcy113.p4j.socket.server.ClientManager;
 import lu.pcy113.p4j.socket.server.P4JServer;
-import lu.pcy113.pclib.listener.EventHandler;
-import lu.pcy113.pclib.listener.EventListener;
-import lu.pcy113.pclib.listener.ListenerPriority;
+import lu.pcy113.pclib.datastructure.pair.Pair;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
+import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.consts.Codecs;
+import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.consts.Packets;
 import lu.kbra.talking.packets.C2S_HandshakePacket.HandShakeData;
 import lu.kbra.talking.packets.S2C_LoginPacket;
 import lu.kbra.talking.packets.S2C_LoginRefusedPacket;
 import lu.kbra.talking.server.client.TalkingServerClient;
 import lu.kbra.talking.server.conn.ConnectionManager;
-import lu.kbra.talking.server.data.Channel;
+import lu.kbra.talking.server.conn.verifier.BlacklistConnectionVerifier;
+import lu.kbra.talking.server.conn.verifier.VersionConnectionVerifier;
 import lu.kbra.talking.server.data.ServerData;
 
 public class TalkingServer implements TalkingInstance {
 
-	private String host;
-	private int port;
+	public static TalkingServer INSTANCE = null;
+
 	private P4JServer server;
 
 	private CodecManager codec;
@@ -43,8 +41,7 @@ public class TalkingServer implements TalkingInstance {
 	private ServerData serverData;
 
 	public TalkingServer(String host, int port) throws IOException {
-		this.host = host;
-		this.port = port;
+		INSTANCE = this;
 
 		codec = Codecs.instance();
 		encryption = EncryptionManager.raw();
@@ -52,7 +49,9 @@ public class TalkingServer implements TalkingInstance {
 
 		this.serverData = new ServerData("test0");
 
-		this.connectionManager = new ConnectionManager(false, "./config/blacklist.json");
+		this.connectionManager = new ConnectionManager();
+		this.connectionManager.registerVerifier(true, new BlacklistConnectionVerifier("./config/blacklist.json"));
+		this.connectionManager.registerVerifier(true, new VersionConnectionVerifier(Consts.VERSION));
 
 		this.server = new P4JServer(codec, encryption, compression);
 		this.server.setClientManager(new ClientManager(server, (socket) -> new TalkingServerClient(socket, this.server, this)));
@@ -60,22 +59,20 @@ public class TalkingServer implements TalkingInstance {
 
 		Packets.registerPackets(server.getPackets());
 
-		connect();
+		server.bind(new InetSocketAddress(host, port));
 		this.server.setAccepting();
 	}
 
-	public void connect() throws IOException {
-		server.bind(new InetSocketAddress(host, port));
-	}
-
 	public void incomingHandshake(TalkingServerClient sclient, HandShakeData obj) {
-		boolean accept = connectionManager.verify(sclient);
-		if (accept) {
+		sclient.setUserData(obj.userData);
+		Pair<Boolean, String> refusalReason = connectionManager.verify(sclient);
+		if (refusalReason.getKey()) {
 			sclient.setUserData(obj.userData);
 			sclient.write(new S2C_LoginPacket(serverData.getView(obj.userData)));
 		} else {
-			sclient.write(new S2C_LoginRefusedPacket());
-			sclient.close();
+			GlobalLogger.info("Refused connection: " + refusalReason.getValue());
+			sclient.write(new S2C_LoginRefusedPacket(refusalReason.getValue()));
+			sclient.disconnect();
 		}
 	}
 

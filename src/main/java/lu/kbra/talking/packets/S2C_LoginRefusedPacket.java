@@ -1,24 +1,30 @@
 package lu.kbra.talking.packets;
 
-import lu.pcy113.p4j.packets.s2c.S2CPacket;
 import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.p4j.socket.server.ServerClient;
+import lu.pcy113.pclib.logger.GlobalLogger;
 
-public class S2C_LoginRefusedPacket implements S2CPacket {
+import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
+import lu.kbra.talking.server.client.TalkingServerClient;
+
+public class S2C_LoginRefusedPacket implements S2C_Talking_Packet<String> {
+
+	private String reason;
 
 	public S2C_LoginRefusedPacket() {
 	}
 
-	@Override
-	public Object serverWrite(ServerClient client) {
-		// TODO Auto-generated method stub
-		return null;
+	public S2C_LoginRefusedPacket(String reason) {
+		this.reason = reason;
 	}
 
 	@Override
-	public void clientRead(P4JClient client, Object obj) {
-		// TODO Auto-generated method stub
+	public String serverWrite(TalkingServerClient client) {
+		return reason;
+	}
 
+	@Override
+	public void clientRead(P4JClient client, String obj) {
+		GlobalLogger.info("Login refused: " + obj);
 	}
 
 }

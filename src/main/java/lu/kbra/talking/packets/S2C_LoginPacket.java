@@ -1,15 +1,15 @@
 package lu.kbra.talking.packets;
 
-import lu.pcy113.p4j.packets.s2c.S2CPacket;
 import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.p4j.socket.server.ServerClient;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingMain;
 import lu.kbra.talking.client.TalkingClient;
+import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
+import lu.kbra.talking.server.client.TalkingServerClient;
 import lu.kbra.talking.server.data.ServerDataView;
 
-public class S2C_LoginPacket implements S2CPacket<ServerDataView> {
+public class S2C_LoginPacket implements S2C_Talking_Packet<ServerDataView> {
 
 	private ServerDataView view;
 
@@ -21,7 +21,7 @@ public class S2C_LoginPacket implements S2CPacket<ServerDataView> {
 	}
 
 	@Override
-	public ServerDataView serverWrite(ServerClient client) {
+	public ServerDataView serverWrite(TalkingServerClient client) {
 		return view;
 	}
 

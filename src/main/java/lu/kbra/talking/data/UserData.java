@@ -5,20 +5,26 @@ import java.security.PublicKey;
 
 public class UserData {
 
-	private String userName;
-	private String hash;
-	private PublicKey publicKey;
-	private PrivateKey privateKey;
+	private final String userName;
+	private final String hash;
+	private final String version;
+	private final PublicKey publicKey;
+	private final PrivateKey privateKey;
 
-	public UserData(String userName, String hash, PublicKey publicKey2, PrivateKey privateKey2) {
+	public UserData(String userName, String hash, String version, PublicKey publicKey2, PrivateKey privateKey2) {
 		this.userName = userName;
 		this.hash = hash;
+		this.version = version;
 		this.publicKey = publicKey2;
 		this.privateKey = privateKey2;
 	}
 
 	public UserData getPublicUserData() {
-		return new UserData(userName, hash, publicKey, null);
+		return new UserData(userName, hash, version, publicKey, null);
+	}
+
+	public String getVersion() {
+		return version;
 	}
 
 	public String getUserName() {

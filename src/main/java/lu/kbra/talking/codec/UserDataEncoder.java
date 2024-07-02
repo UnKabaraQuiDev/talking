@@ -2,9 +2,9 @@ package lu.kbra.talking.codec;
 
 import java.nio.ByteBuffer;
 
-import lu.kbra.talking.data.UserData;
 import lu.pcy113.jbcodec.encoder.DefaultObjectEncoder;
-import lu.pcy113.pclib.PCUtils;
+
+import lu.kbra.talking.data.UserData;
 
 /**
  * BB1 x- String USER_NAME<br>
@@ -23,6 +23,7 @@ public class UserDataEncoder extends DefaultObjectEncoder<UserData> {
 
 		bb.put(cm.encode(false, obj.getUserName()));
 		bb.put(cm.encode(false, obj.getHash()));
+		bb.put(cm.encode(true, obj.getVersion()));
 		bb.put(cm.encode(true, obj.getPublicKey()));
 		bb.put(cm.encode(true, obj.getPrivateKey()));
 
@@ -33,7 +34,8 @@ public class UserDataEncoder extends DefaultObjectEncoder<UserData> {
 
 	@Override
 	public int estimateSize(boolean head, UserData obj) {
-		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getUserName()) + cm.estimateSize(false, obj.getHash()) + cm.estimateSize(true, obj.getPublicKey()) + cm.estimateSize(true, obj.getPrivateKey());
+		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getUserName()) + cm.estimateSize(false, obj.getHash()) + cm.estimateSize(true, obj.getVersion()) + cm.estimateSize(true, obj.getPublicKey())
+				+ cm.estimateSize(true, obj.getPrivateKey());
 	}
 
 }

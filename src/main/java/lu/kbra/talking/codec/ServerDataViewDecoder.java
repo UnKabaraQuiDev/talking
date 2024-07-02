@@ -15,6 +15,7 @@ public class ServerDataViewDecoder extends DefaultObjectDecoder<ServerDataView> 
 	public ServerDataView decode(boolean head, ByteBuffer bb) {
 		super.verifyHeader(head, bb);
 		
+		@SuppressWarnings("unchecked")
 		HashMap<UUID, Channel> channels = (HashMap<UUID, Channel>) cm.getDecoderByClass(HashMap.class).decode(false, bb);
 		
 		return new ServerDataView(channels);
