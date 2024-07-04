@@ -1,19 +1,11 @@
 package lu.kbra.talking.client;
 
 import java.io.IOException;
-import java.net.InetAddress;
+import java.net.Inet4Address;
 import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-
-import lu.pcy113.jbcodec.CodecManager;
-import lu.pcy113.p4j.compress.CompressionManager;
-import lu.pcy113.p4j.crypto.EncryptionManager;
-import lu.pcy113.p4j.socket.client.ClientStatus;
-import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
 import lu.kbra.talking.client.data.C_ServerData;
@@ -23,6 +15,13 @@ import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.consts.Packets;
 import lu.kbra.talking.packets.C2S_HandshakePacket;
 import lu.kbra.talking.server.client.DefaultClientListener;
+import lu.pcy113.jbcodec.CodecManager;
+import lu.pcy113.p4j.compress.CompressionManager;
+import lu.pcy113.p4j.crypto.EncryptionManager;
+import lu.pcy113.p4j.socket.client.ClientStatus;
+import lu.pcy113.p4j.socket.client.P4JClient;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.logger.GlobalLogger;
 
 public class TalkingClient implements TalkingInstance {
 
@@ -93,9 +92,10 @@ public class TalkingClient implements TalkingInstance {
 		}
 
 		client.bind();
+		System.out.println("Client bound on: " + client.getLocalInetSocketAddress());
 
-		System.out.println("connecting to: " + InetAddress.getByName(remoteHost));
-		client.connect(new InetSocketAddress(InetAddress.getByName(remoteHost), remotePort));
+		System.out.println("connecting to: " + Inet4Address.getByName(remoteHost));
+		client.connect(new InetSocketAddress(Inet4Address.getByName(remoteHost), remotePort));
 
 		GlobalLogger.log("Public key: " + PCUtils.byteArrayToHexString(userData.getPublicKey().getEncoded()));
 		client.write(new C2S_HandshakePacket(userData.getPublicUserData()));
