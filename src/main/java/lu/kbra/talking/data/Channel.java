@@ -1,9 +1,9 @@
-package lu.kbra.talking.server.data;
+package lu.kbra.talking.data;
 
 import java.util.Objects;
 import java.util.UUID;
 
-import lu.kbra.talking.data.UserData;
+import lu.kbra.talking.server.data.S_UserData;
 
 public class Channel {
 
@@ -15,7 +15,7 @@ public class Channel {
 		this.uuid = uuid;
 	}
 
-	public boolean hasAccess(UserData userData) {
+	public boolean hasAccess(S_UserData userData) {
 		return true;
 	}
 

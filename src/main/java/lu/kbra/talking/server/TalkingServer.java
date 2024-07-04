@@ -17,14 +17,14 @@ import lu.kbra.talking.TalkingInstance;
 import lu.kbra.talking.consts.Codecs;
 import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.consts.Packets;
-import lu.kbra.talking.packets.C2S_HandshakePacket.HandShakeData;
 import lu.kbra.talking.packets.S2C_LoginPacket;
 import lu.kbra.talking.packets.S2C_LoginRefusedPacket;
 import lu.kbra.talking.server.client.TalkingServerClient;
 import lu.kbra.talking.server.conn.ConnectionManager;
 import lu.kbra.talking.server.conn.verifier.BlacklistConnectionVerifier;
 import lu.kbra.talking.server.conn.verifier.VersionConnectionVerifier;
-import lu.kbra.talking.server.data.ServerData;
+import lu.kbra.talking.server.data.S_ServerData;
+import lu.kbra.talking.server.data.S_UserData;
 
 public class TalkingServer implements TalkingInstance {
 
@@ -38,7 +38,7 @@ public class TalkingServer implements TalkingInstance {
 
 	private ConnectionManager connectionManager;
 
-	private ServerData serverData;
+	private S_ServerData serverData;
 
 	public TalkingServer(String host, int port) throws IOException {
 		INSTANCE = this;
@@ -47,7 +47,7 @@ public class TalkingServer implements TalkingInstance {
 		encryption = EncryptionManager.raw();
 		compression = CompressionManager.raw();
 
-		this.serverData = new ServerData("test0", "test1");
+		this.serverData = new S_ServerData("test0", "test1");
 
 		this.connectionManager = new ConnectionManager();
 		this.connectionManager.registerVerifier(true, new BlacklistConnectionVerifier("./config/blacklist.json"));
@@ -65,14 +65,14 @@ public class TalkingServer implements TalkingInstance {
 		this.server.setAccepting();
 	}
 
-	public void incomingHandshake(TalkingServerClient sclient, HandShakeData obj) {
-		sclient.setUserData(obj.userData);
+	public void incomingHandshake(TalkingServerClient sclient, S_UserData obj) {
+		sclient.setUserData(obj);
 		sclient.getUserData().setCurrentChannelUuid(serverData.getDefaultChannelUuid());
 		Pair<Boolean, String> refusalReason = connectionManager.verify(sclient);
 		if (refusalReason.getKey()) {
 			GlobalLogger.info("Accepted connection: " + sclient.getUUID() + " = '" + sclient.getUserData().getUserName() + "' @ "
 					+ PCUtils.try_(() -> sclient.getSocketChannel().getRemoteAddress(), (e) -> e.getClass().getName() + ": " + e.getMessage()));
-			sclient.write(new S2C_LoginPacket(serverData.getView(obj.userData)));
+			sclient.write(new S2C_LoginPacket(serverData.getClientView(obj)));
 		} else {
 			GlobalLogger.info("Refused connection: " + refusalReason.getValue());
 			sclient.write(new S2C_LoginRefusedPacket(refusalReason.getValue()));
@@ -84,7 +84,7 @@ public class TalkingServer implements TalkingInstance {
 		return server;
 	}
 
-	public ServerData getServerData() {
+	public S_ServerData getServerData() {
 		return serverData;
 	}
 

@@ -1,22 +1,24 @@
-package lu.kbra.talking.server.data;
+package lu.kbra.talking.client.data;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class ServerDataView {
+import lu.kbra.talking.data.Channel;
+
+public class C_ServerData {
 
 	private UUID currentChannelUuid;
 
 	private Map<String, Channel> channels;
 
-	public ServerDataView(Map<String, Channel> channels, UUID current) {
+	public C_ServerData(Map<String, Channel> channels, UUID current) {
 		this.channels = channels;
 		this.currentChannelUuid = current;
 	}
 
-	public ServerDataView(List<Channel> channels, UUID current) {
+	public C_ServerData(List<Channel> channels, UUID current) {
 		this.channels = channels.stream().collect(Collectors.toMap(Channel::getName, a -> a));
 		this.currentChannelUuid = current;
 	}

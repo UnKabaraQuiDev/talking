@@ -4,12 +4,12 @@ import java.nio.ByteBuffer;
 
 import lu.pcy113.jbcodec.encoder.DefaultObjectEncoder;
 
-import lu.kbra.talking.server.data.ServerDataView;
+import lu.kbra.talking.client.data.C_ServerData;
 
-public class ServerDataViewEncoder extends DefaultObjectEncoder<ServerDataView> {
+public class C_ServerDataEncoder extends DefaultObjectEncoder<C_ServerData> {
 
 	@Override
-	public ByteBuffer encode(boolean head, ServerDataView obj) {
+	public ByteBuffer encode(boolean head, C_ServerData obj) {
 		final int length = estimateSize(head, obj);
 		final ByteBuffer bb = ByteBuffer.allocate(length);
 
@@ -24,7 +24,7 @@ public class ServerDataViewEncoder extends DefaultObjectEncoder<ServerDataView> 
 	}
 
 	@Override
-	public int estimateSize(boolean head, ServerDataView obj) {
+	public int estimateSize(boolean head, C_ServerData obj) {
 		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getChannels()) + cm.estimateSize(true, obj.getCurrentChannelUuid());
 	}
 

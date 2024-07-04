@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import lu.pcy113.jbcodec.decoder.DefaultObjectDecoder;
 
-import lu.kbra.talking.server.data.Channel;
+import lu.kbra.talking.data.Channel;
 
 public class ChannelDecoder extends DefaultObjectDecoder<Channel> {
 

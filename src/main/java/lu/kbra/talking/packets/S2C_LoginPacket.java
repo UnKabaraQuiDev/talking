@@ -5,28 +5,28 @@ import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingMain;
 import lu.kbra.talking.client.TalkingClient;
+import lu.kbra.talking.client.data.C_ServerData;
 import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
 import lu.kbra.talking.server.client.TalkingServerClient;
-import lu.kbra.talking.server.data.ServerDataView;
 
-public class S2C_LoginPacket implements S2C_Talking_Packet<ServerDataView> {
+public class S2C_LoginPacket implements S2C_Talking_Packet<C_ServerData> {
 
-	private ServerDataView view;
+	private C_ServerData view;
 
 	public S2C_LoginPacket() {
 	}
 
-	public S2C_LoginPacket(ServerDataView view) {
+	public S2C_LoginPacket(C_ServerData view) {
 		this.view = view;
 	}
 
 	@Override
-	public ServerDataView serverWrite(TalkingServerClient client) {
+	public C_ServerData serverWrite(TalkingServerClient client) {
 		return view;
 	}
 
 	@Override
-	public void clientRead(P4JClient client, ServerDataView obj) {
+	public void clientRead(P4JClient client, C_ServerData obj) {
 		((TalkingClient) TalkingMain.getInstance()).setServerDataView(obj);
 		GlobalLogger.info("Successfull login: " + obj.getChannels());
 		TalkingClient.INSTANCE.getConsoleClient().update();

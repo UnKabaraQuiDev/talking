@@ -2,38 +2,29 @@ package lu.kbra.talking.packets;
 
 import lu.pcy113.p4j.socket.client.P4JClient;
 
-import lu.kbra.talking.data.UserData;
-import lu.kbra.talking.packets.C2S_HandshakePacket.HandShakeData;
 import lu.kbra.talking.packets.impl.C2S_Talking_Packet;
 import lu.kbra.talking.server.TalkingServer;
 import lu.kbra.talking.server.client.TalkingServerClient;
+import lu.kbra.talking.server.data.S_UserData;
 
-public class C2S_HandshakePacket implements C2S_Talking_Packet<HandShakeData> {
+public class C2S_HandshakePacket implements C2S_Talking_Packet<S_UserData> {
 
-	public static class HandShakeData {
-		public UserData userData;
-
-		public HandShakeData(UserData userData) {
-			this.userData = userData;
-		}
-	}
-
-	private HandShakeData handShakeData;
+	private S_UserData userData;
 
 	public C2S_HandshakePacket() {
 	}
 
-	public C2S_HandshakePacket(UserData userData) {
-		this.handShakeData = new HandShakeData(userData);
+	public C2S_HandshakePacket(S_UserData userData) {
+		this.userData = userData;
 	}
 
 	@Override
-	public HandShakeData clientWrite(P4JClient client) {
-		return handShakeData;
+	public S_UserData clientWrite(P4JClient client) {
+		return userData;
 	}
 
 	@Override
-	public void serverRead(TalkingServerClient sclient, HandShakeData obj) {
+	public void serverRead(TalkingServerClient sclient, S_UserData obj) {
 		TalkingServer.INSTANCE.incomingHandshake(sclient, obj);
 	}
 

@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 import lu.pcy113.jbcodec.encoder.DefaultObjectEncoder;
 
-import lu.kbra.talking.server.data.Channel;
+import lu.kbra.talking.data.Channel;
 
 public class ChannelEncoder extends DefaultObjectEncoder<Channel> {
 

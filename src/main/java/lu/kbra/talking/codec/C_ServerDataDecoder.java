@@ -6,20 +6,20 @@ import java.util.UUID;
 
 import lu.pcy113.jbcodec.decoder.DefaultObjectDecoder;
 
-import lu.kbra.talking.server.data.Channel;
-import lu.kbra.talking.server.data.ServerDataView;
+import lu.kbra.talking.client.data.C_ServerData;
+import lu.kbra.talking.data.Channel;
 
-public class ServerDataViewDecoder extends DefaultObjectDecoder<ServerDataView> {
+public class C_ServerDataDecoder extends DefaultObjectDecoder<C_ServerData> {
 
 	@Override
-	public ServerDataView decode(boolean head, ByteBuffer bb) {
+	public C_ServerData decode(boolean head, ByteBuffer bb) {
 		super.verifyHeader(head, bb);
 
 		@SuppressWarnings("unchecked")
 		HashMap<String, Channel> channels = (HashMap<String, Channel>) cm.getDecoderByClass(HashMap.class).decode(false, bb);
 		UUID default_ = (UUID) cm.decode(bb);
 
-		return new ServerDataView(channels, default_);
+		return new C_ServerData(channels, default_);
 	}
 
 }

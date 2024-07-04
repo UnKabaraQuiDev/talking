@@ -6,20 +6,21 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import lu.kbra.talking.data.UserData;
+import lu.kbra.talking.client.data.C_ServerData;
+import lu.kbra.talking.data.Channel;
 
-public class ServerData {
+public class S_ServerData {
 
 	private UUID defaultChannelUuid;
 
 	private Map<String, Channel> channels;
 
-	public ServerData(List<Channel> channels) {
+	public S_ServerData(List<Channel> channels) {
 		this.channels = channels.stream().collect(Collectors.toMap(Channel::getName, a -> a));
 		this.defaultChannelUuid = channels.get(0).getUuid();
 	}
 
-	public ServerData(String... strings) {
+	public S_ServerData(String... strings) {
 		this.channels = new HashMap<String, Channel>();
 		for (String s : strings) {
 			this.channels.put(s, new Channel(s, UUID.randomUUID()));
@@ -47,8 +48,8 @@ public class ServerData {
 		this.defaultChannelUuid = this.channels.values().stream().filter(c -> c.equals(obj)).findFirst().get().getUuid();
 	}
 
-	public ServerDataView getView(UserData obj) {
-		return new ServerDataView(channels.values().stream().collect(Collectors.toList()), defaultChannelUuid);
+	public C_ServerData getClientView(S_UserData obj) {
+		return new C_ServerData(channels.values().stream().collect(Collectors.toList()), defaultChannelUuid);
 	}
 
 	public Channel getChannel(UUID obj) {

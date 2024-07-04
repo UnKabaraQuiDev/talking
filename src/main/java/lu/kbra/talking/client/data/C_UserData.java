@@ -1,12 +1,12 @@
-package lu.kbra.talking.data;
+package lu.kbra.talking.client.data;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.UUID;
 
-import lu.kbra.talking.server.data.Channel;
+import lu.kbra.talking.server.data.S_UserData;
 
-public class UserData {
+public class C_UserData {
 
 	private final String userName;
 	private final String hash;
@@ -16,7 +16,7 @@ public class UserData {
 
 	private UUID currentChannelUuid;
 
-	public UserData(String userName, String hash, String version, PublicKey publicKey2, PrivateKey privateKey2) {
+	public C_UserData(String userName, String hash, String version, PublicKey publicKey2, PrivateKey privateKey2) {
 		this.userName = userName;
 		this.hash = hash;
 		this.version = version;
@@ -24,8 +24,8 @@ public class UserData {
 		this.privateKey = privateKey2;
 	}
 
-	public UserData getPublicUserData() {
-		return new UserData(userName, hash, version, publicKey, null);
+	public S_UserData getPublicUserData() {
+		return new S_UserData(userName, hash, version, publicKey);
 	}
 
 	public String getVersion() {

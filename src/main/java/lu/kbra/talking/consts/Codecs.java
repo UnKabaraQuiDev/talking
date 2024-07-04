@@ -10,14 +10,12 @@ import lu.pcy113.jbcodec.encoder.UUIDEncoder;
 
 import lu.kbra.talking.codec.ChannelDecoder;
 import lu.kbra.talking.codec.ChannelEncoder;
-import lu.kbra.talking.codec.HandShakeDataDecoder;
-import lu.kbra.talking.codec.HandShakeDataEncoder;
 import lu.kbra.talking.codec.RSAPublicKeyDecoder;
 import lu.kbra.talking.codec.RSAPublicKeyEncoder;
-import lu.kbra.talking.codec.ServerDataViewDecoder;
-import lu.kbra.talking.codec.ServerDataViewEncoder;
-import lu.kbra.talking.codec.UserDataDecoder;
-import lu.kbra.talking.codec.UserDataEncoder;
+import lu.kbra.talking.codec.C_ServerDataDecoder;
+import lu.kbra.talking.codec.C_ServerDataEncoder;
+import lu.kbra.talking.codec.S_UserDataDecoder;
+import lu.kbra.talking.codec.S_UserDataEncoder;
 
 public class Codecs {
 
@@ -28,9 +26,9 @@ public class Codecs {
 		codec.register(new UUIDEncoder(), new UUIDDecoder(), (short) 12);
 		codec.register(new PairEncoder(), new PairDecoder(), (short) 13);
 
-		codec.register(new UserDataEncoder(), new UserDataDecoder(), (short) 20);
-		codec.register(new ServerDataViewEncoder(), new ServerDataViewDecoder(), (short) 21);
-		codec.register(new HandShakeDataEncoder(), new HandShakeDataDecoder(), (short) 22);
+		codec.register(new S_UserDataEncoder(), new S_UserDataDecoder(), (short) 20);
+		codec.register(new C_ServerDataEncoder(), new C_ServerDataDecoder(), (short) 21);
+		// 22
 		codec.register(new ChannelEncoder(), new ChannelDecoder(), (short) 23);
 		codec.register(new RSAPublicKeyEncoder(), new RSAPublicKeyDecoder(), (short) 24);
 

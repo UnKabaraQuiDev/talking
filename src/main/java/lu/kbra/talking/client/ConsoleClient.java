@@ -3,9 +3,9 @@ package lu.kbra.talking.client;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import lu.kbra.talking.data.Channel;
 import lu.kbra.talking.packets.C2S_S2C_ChangeChannel;
 import lu.kbra.talking.packets.C2S_S2C_MessagePacket;
-import lu.kbra.talking.server.data.Channel;
 
 public class ConsoleClient extends Thread implements Runnable {
 

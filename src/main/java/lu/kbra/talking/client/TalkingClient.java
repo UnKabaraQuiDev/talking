@@ -14,13 +14,13 @@ import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
+import lu.kbra.talking.client.data.C_ServerData;
+import lu.kbra.talking.client.data.C_UserData;
 import lu.kbra.talking.consts.Codecs;
 import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.consts.Packets;
-import lu.kbra.talking.data.UserData;
 import lu.kbra.talking.packets.C2S_HandshakePacket;
 import lu.kbra.talking.server.client.DefaultClientListener;
-import lu.kbra.talking.server.data.ServerDataView;
 
 public class TalkingClient implements TalkingInstance {
 
@@ -30,13 +30,13 @@ public class TalkingClient implements TalkingInstance {
 	private int remotePort;
 	private P4JClient client;
 
-	private UserData userData;
+	private C_UserData userData;
 
 	private CodecManager codec;
 	private EncryptionManager encryption;
 	private CompressionManager compression;
 
-	private ServerDataView serverData;
+	private C_ServerData serverData;
 
 	private ConsoleClient consoleClient;
 
@@ -51,7 +51,7 @@ public class TalkingClient implements TalkingInstance {
 		compression = CompressionManager.raw();
 
 		KeyPair keys = genKeys();
-		this.userData = new UserData("name", "hash", Consts.VERSION, keys.getPublic(), keys.getPrivate());
+		this.userData = new C_UserData("name", "hash", Consts.VERSION, keys.getPublic(), keys.getPrivate());
 
 		client = new P4JClient(codec, encryption, compression);
 		this.client.getEventManager().register(new DefaultClientListener());
@@ -83,7 +83,7 @@ public class TalkingClient implements TalkingInstance {
 		client.write(new C2S_HandshakePacket(userData.getPublicUserData()));
 	}
 
-	public UserData getUserData() {
+	public C_UserData getUserData() {
 		return userData;
 	}
 
@@ -99,11 +99,11 @@ public class TalkingClient implements TalkingInstance {
 		this.remoteHost = host;
 	}
 
-	public ServerDataView getServerData() {
+	public C_ServerData getServerData() {
 		return serverData;
 	}
 
-	public void setServerDataView(ServerDataView obj) {
+	public void setServerDataView(C_ServerData obj) {
 		this.serverData = obj;
 	}
 
