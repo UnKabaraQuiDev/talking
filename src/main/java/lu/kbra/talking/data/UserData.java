@@ -4,6 +4,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.UUID;
 
+import lu.kbra.talking.server.data.Channel;
+
 public class UserData {
 
 	private final String userName;
@@ -12,7 +14,7 @@ public class UserData {
 	private final PublicKey publicKey;
 	private final PrivateKey privateKey;
 
-	private UUID currentChannel;
+	private UUID currentChannelUuid;
 
 	public UserData(String userName, String hash, String version, PublicKey publicKey2, PrivateKey privateKey2) {
 		this.userName = userName;
@@ -46,12 +48,12 @@ public class UserData {
 		return privateKey;
 	}
 
-	public UUID getCurrentChannel() {
-		return currentChannel;
+	public UUID getCurrentChannelUuid() {
+		return currentChannelUuid;
 	}
 
-	public void setCurrentChannel(UUID currentChannel) {
-		this.currentChannel = currentChannel;
+	public void setCurrentChannelUuid(UUID currentChannel) {
+		this.currentChannelUuid = currentChannel;
 	}
 
 }

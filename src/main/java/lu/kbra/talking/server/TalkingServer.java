@@ -67,6 +67,7 @@ public class TalkingServer implements TalkingInstance {
 
 	public void incomingHandshake(TalkingServerClient sclient, HandShakeData obj) {
 		sclient.setUserData(obj.userData);
+		sclient.getUserData().setCurrentChannelUuid(serverData.getDefaultChannelUuid());
 		Pair<Boolean, String> refusalReason = connectionManager.verify(sclient);
 		if (refusalReason.getKey()) {
 			GlobalLogger.info("Accepted connection: " + sclient.getUUID() + " = '" + sclient.getUserData().getUserName() + "' @ "
