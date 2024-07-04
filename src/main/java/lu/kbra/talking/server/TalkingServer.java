@@ -47,7 +47,7 @@ public class TalkingServer implements TalkingInstance {
 		encryption = EncryptionManager.raw();
 		compression = CompressionManager.raw();
 
-		this.serverData = new ServerData("test0");
+		this.serverData = new ServerData("test0", "test1");
 
 		this.connectionManager = new ConnectionManager();
 		this.connectionManager.registerVerifier(true, new BlacklistConnectionVerifier("./config/blacklist.json"));
@@ -77,6 +77,14 @@ public class TalkingServer implements TalkingInstance {
 			sclient.write(new S2C_LoginRefusedPacket(refusalReason.getValue()));
 			sclient.disconnect();
 		}
+	}
+
+	public P4JServer getServer() {
+		return server;
+	}
+
+	public ServerData getServerData() {
+		return serverData;
 	}
 
 }

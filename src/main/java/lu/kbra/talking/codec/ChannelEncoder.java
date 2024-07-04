@@ -16,6 +16,7 @@ public class ChannelEncoder extends DefaultObjectEncoder<Channel> {
 		super.putHeader(head, bb);
 
 		bb.put(cm.encode(false, obj.getName()));
+		bb.put(cm.encode(false, obj.getUuid()));
 
 		bb.flip();
 		return bb;
@@ -23,7 +24,7 @@ public class ChannelEncoder extends DefaultObjectEncoder<Channel> {
 
 	@Override
 	public int estimateSize(boolean head, Channel obj) {
-		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getName());
+		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getName()) + cm.estimateSize(false, obj.getUuid());
 	}
 
 }

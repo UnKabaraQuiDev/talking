@@ -29,6 +29,7 @@ public class S2C_LoginPacket implements S2C_Talking_Packet<ServerDataView> {
 	public void clientRead(P4JClient client, ServerDataView obj) {
 		((TalkingClient) TalkingMain.getInstance()).setServerDataView(obj);
 		GlobalLogger.info("Successfull login: " + obj.getChannels());
+		TalkingClient.INSTANCE.getConsoleClient().update();
 	}
 
 }

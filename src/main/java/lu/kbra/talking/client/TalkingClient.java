@@ -99,8 +99,16 @@ public class TalkingClient implements TalkingInstance {
 		this.remoteHost = host;
 	}
 
+	public ServerDataView getServerData() {
+		return serverData;
+	}
+
 	public void setServerDataView(ServerDataView obj) {
 		this.serverData = obj;
+	}
+
+	public ConsoleClient getConsoleClient() {
+		return consoleClient;
 	}
 
 }

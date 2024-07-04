@@ -14,11 +14,12 @@ public class ServerDataViewDecoder extends DefaultObjectDecoder<ServerDataView> 
 	@Override
 	public ServerDataView decode(boolean head, ByteBuffer bb) {
 		super.verifyHeader(head, bb);
-		
+
 		@SuppressWarnings("unchecked")
-		HashMap<UUID, Channel> channels = (HashMap<UUID, Channel>) cm.getDecoderByClass(HashMap.class).decode(false, bb);
-		
-		return new ServerDataView(channels);
+		HashMap<String, Channel> channels = (HashMap<String, Channel>) cm.getDecoderByClass(HashMap.class).decode(false, bb);
+		UUID default_ = (UUID) cm.decode(bb);
+
+		return new ServerDataView(channels, default_);
 	}
 
 }
