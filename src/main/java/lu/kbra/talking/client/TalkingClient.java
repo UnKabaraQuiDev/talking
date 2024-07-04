@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
+import lu.pcy113.p4j.socket.client.ClientStatus;
 import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.logger.GlobalLogger;
@@ -40,11 +41,8 @@ public class TalkingClient implements TalkingInstance {
 
 	private ConsoleClient consoleClient;
 
-	public TalkingClient(String host, int port) throws IOException {
+	public TalkingClient() throws IOException {
 		INSTANCE = this;
-
-		this.remoteHost = host;
-		this.remotePort = port;
 
 		codec = Codecs.instance();
 		encryption = EncryptionManager.raw();
@@ -53,14 +51,13 @@ public class TalkingClient implements TalkingInstance {
 		KeyPair keys = genKeys();
 		this.userData = new C_UserData("name", "hash", Consts.VERSION, keys.getPublic(), keys.getPrivate());
 
+		this.consoleClient = new ConsoleClient();
+	}
+
+	private void createClient() {
 		client = new P4JClient(codec, encryption, compression);
 		this.client.getEventManager().register(new DefaultClientListener());
-
-		this.consoleClient = new ConsoleClient();
-
 		Packets.registerPackets(client.getPackets());
-
-		connect();
 	}
 
 	private KeyPair genKeys() {
@@ -74,7 +71,26 @@ public class TalkingClient implements TalkingInstance {
 		}
 	}
 
-	public void connect() throws IOException {
+	public void disconnect() {
+		if (client.getClientStatus().equals(ClientStatus.LISTENING)) {
+			client.disconnect();
+			client = null;
+		}
+	}
+
+	public void connect(String host, int port) throws IOException {
+		if (client != null && client.getClientStatus().equals(ClientStatus.LISTENING)) {
+			System.out.println("Disconnect before reconnecting");
+			return;
+		}
+
+		this.remoteHost = host;
+		this.remotePort = port;
+
+		if(client == null) {
+			createClient();
+		}
+		
 		client.bind();
 
 		client.connect(new InetSocketAddress(remoteHost, remotePort));

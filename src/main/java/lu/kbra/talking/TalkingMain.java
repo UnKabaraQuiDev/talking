@@ -49,7 +49,7 @@ public class TalkingMain {
 			break;
 		case CLIENT:
 			GlobalLogger.info("Starting client to: " + host + ":" + port);
-			instance = new TalkingClient(host, port);
+			instance = new TalkingClient();
 			break;
 		}
 	}
