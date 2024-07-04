@@ -23,8 +23,8 @@ public class TalkingMain {
 			return;
 		}
 
-		if (args.length < 2) {
-			GlobalLogger.info("Usage: java -jar TalkingMain.jar <type [server|client]> <host>:<port>");
+		if (args.length < 1) {
+			GlobalLogger.info("Usage: java -jar TalkingMain.jar <type [server|client]> (<port>)");
 			return;
 		}
 
@@ -34,21 +34,17 @@ public class TalkingMain {
 			System.exit(1);
 		}
 
-		String host = args[1];
 		int port = Consts.DEFAULT_PORT;
-		if (host.contains(":")) {
-			String[] p = host.split(":");
-			host = p[0];
-			port = Integer.parseInt(p[1]);
+		if (args.length > 1) {
+			port = Integer.parseInt(args[1]);
 		}
 
 		switch (type) {
 		case SERVER:
-			GlobalLogger.info("Starting server on: " + host + ":" + port);
-			instance = new TalkingServer(host, port);
+			GlobalLogger.info("Starting server on: 0.0.0.0:" + port);
+			instance = new TalkingServer("0.0.0.0", port);
 			break;
 		case CLIENT:
-			GlobalLogger.info("Starting client to: " + host + ":" + port);
 			instance = new TalkingClient();
 			break;
 		}

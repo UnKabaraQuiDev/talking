@@ -120,7 +120,7 @@
 						<classpath />
 						<argument>lu.kbra.talking.TalkingMain</argument>
 						<argument>${exec.type}</argument>
-						<argument>localhost:8000</argument>
+						<!--<argument>8000</argument>-->
 					</arguments>
 				</configuration>
 			</plugin>

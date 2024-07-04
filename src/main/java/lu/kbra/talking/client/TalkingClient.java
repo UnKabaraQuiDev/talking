@@ -1,6 +1,7 @@
 package lu.kbra.talking.client;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -87,13 +88,14 @@ public class TalkingClient implements TalkingInstance {
 		this.remoteHost = host;
 		this.remotePort = port;
 
-		if(client == null) {
+		if (client == null) {
 			createClient();
 		}
-		
+
 		client.bind();
 
-		client.connect(new InetSocketAddress(remoteHost, remotePort));
+		System.out.println("connecting to: " + InetAddress.getByName(remoteHost));
+		client.connect(new InetSocketAddress(InetAddress.getByName(remoteHost), remotePort));
 
 		GlobalLogger.log("Public key: " + PCUtils.byteArrayToHexString(userData.getPublicKey().getEncoded()));
 		client.write(new C2S_HandshakePacket(userData.getPublicUserData()));
