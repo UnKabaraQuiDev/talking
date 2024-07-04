@@ -50,7 +50,7 @@ public class TalkingServer implements TalkingInstance {
 		this.serverData = new S_ServerData("test0", "test1");
 
 		this.connectionManager = new ConnectionManager();
-		this.connectionManager.registerVerifier(true, new BlacklistConnectionVerifier("./config/blacklist.json"));
+		// this.connectionManager.registerVerifier(true, new BlacklistConnectionVerifier("./config/blacklist.json"));
 		this.connectionManager.registerVerifier(true, new VersionConnectionVerifier(Consts.VERSION));
 
 		this.server = new P4JServer(codec, encryption, compression);

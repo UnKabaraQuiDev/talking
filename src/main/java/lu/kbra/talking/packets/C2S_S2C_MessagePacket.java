@@ -12,12 +12,12 @@ import lu.kbra.talking.packets.impl.C2S_Talking_Packet;
 import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
 import lu.kbra.talking.server.client.TalkingServerClient;
 
-public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Pair<UUID, String>>, S2C_Talking_Packet<String> {
-
-	private String text;
+public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Pair<UUID, String>>, S2C_Talking_Packet<Pair<String, String>> {
 
 	public C2S_S2C_MessagePacket() {
 	}
+
+	private String text;
 
 	public C2S_S2C_MessagePacket(String text) {
 		this.text = text;
@@ -32,22 +32,33 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Pair<UUID, Stri
 
 	@Override
 	public void serverRead(TalkingServerClient sclient, Pair<UUID, String> obj) {
-		GlobalLogger.log("Received: " + obj);
 		final UUID channel = obj.getKey();
-		sclient.getServer().broadcastIf(new C2S_S2C_MessagePacket(obj.getValue()), (s) -> !s.equals(sclient) && ((TalkingServerClient) s).getUserData().getCurrentChannelUuid().equals(channel));
+		sclient.getServer().broadcastIf(C2S_S2C_MessagePacket.s2c(sclient.getUserData().getUserName(), obj.getValue()), (s) -> !s.equals(sclient) && ((TalkingServerClient) s).getUserData().getCurrentChannelUuid().equals(channel));
 	}
 
 	// S2C - - - - - -
 
-	@Override
-	public void clientRead(P4JClient client, String obj) {
-		System.out.println("[userName] << " + obj);
+	private String name;
+
+	public C2S_S2C_MessagePacket(String name, String text) {
+		this.text = text;
+		this.name = name;
 	}
 
 	@Override
-	public String serverWrite(TalkingServerClient client) {
-		GlobalLogger.log("Sending: " + text + " to: " + client.getUUID() + "(" + client.getUserData().getUserName() + ")");
-		return text;
+	public void clientRead(P4JClient client, Pair<String, String> obj) {
+		System.out.println("[" + obj.getKey() + "] << " + obj.getValue());
+		TalkingClient.INSTANCE.getConsoleClient().print();
+	}
+
+	@Override
+	public Pair<String, String> serverWrite(TalkingServerClient client) {
+		GlobalLogger.log("Sending: " + text + " from: " + client.getUserData().getUserName() + " to: " + client.getUUID() + "(" + client.getUserData().getUserName() + ")");
+		return Pairs.readOnly(name, text);
+	}
+
+	public static C2S_S2C_MessagePacket s2c(String name, String text) {
+		return new C2S_S2C_MessagePacket(name, text);
 	}
 
 }
