@@ -3,7 +3,9 @@ package lu.kbra.talking.server.data;
 import java.security.PublicKey;
 import java.util.UUID;
 
+import lu.kbra.talking.client.data.C_RemoteUserData;
 import lu.kbra.talking.data.Channel;
+import lu.kbra.talking.server.client.TalkingServerClient;
 
 public class S_UserData {
 
@@ -47,6 +49,10 @@ public class S_UserData {
 
 	public Channel getCurrentChannel(S_ServerData data) {
 		return data.getChannel(currentChannelUuid);
+	}
+
+	public C_RemoteUserData getRemoteUserData(TalkingServerClient sclient) {
+		return new C_RemoteUserData(sclient.getUUID(), publicKey);
 	}
 
 }

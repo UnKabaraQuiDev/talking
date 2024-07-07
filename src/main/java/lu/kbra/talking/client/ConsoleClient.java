@@ -26,10 +26,10 @@ public class ConsoleClient extends Thread implements Runnable {
 			try {
 				String line = scanner.nextLine();
 				computeCommand(line);
-				print();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			print();
 		}
 	}
 
@@ -44,20 +44,35 @@ public class ConsoleClient extends Thread implements Runnable {
 		} else if (tokens[0].equalsIgnoreCase("ll")) {
 			llCommand();
 		} else if (tokens[0].equalsIgnoreCase("exit")) {
-			TalkingClient.INSTANCE.getClient().disconnect();
+			disconnectCommand();
 			running = false;
 		} else if (tokens[0].equalsIgnoreCase("connect")) {
 			connectCommand(tokens[1]);
 		} else if (tokens[0].equalsIgnoreCase("disconnect")) {
 			disconnectCommand();
+		} else if (tokens[0].equalsIgnoreCase("bind")) {
+			bindCommand(Integer.parseInt(tokens[1]));
 		}
 	}
 
+	private void bindCommand(int localPort) {
+		TalkingClient.INSTANCE.setLocalPort(localPort);
+		System.out.println("Local port: " + localPort + " will be used for the next connection");
+	}
+
 	private void disconnectCommand() {
+		if (!TalkingClient.INSTANCE.isConnected()) {
+			System.out.println("You are not connected to a server, connect first");
+			return;
+		}
 		TalkingClient.INSTANCE.disconnect();
 	}
 
 	private void connectCommand(String addr) throws IOException {
+		if (TalkingClient.INSTANCE.isConnected()) {
+			System.out.println("You are already connected to a server, disconnect first");
+			return;
+		}
 		if (!addr.contains(":")) {
 			addr += ":" + Consts.DEFAULT_PORT;
 		}
@@ -68,20 +83,36 @@ public class ConsoleClient extends Thread implements Runnable {
 	}
 
 	private void llCommand() {
+		if (!TalkingClient.INSTANCE.isConnected()) {
+			System.out.println("Connect to a server first: connect <host>(:<port>)");
+			return;
+		}
 		System.out.println(TalkingClient.INSTANCE.getServerData().getChannels().keySet().stream().collect(Collectors.joining("\n")));
 	}
 
 	private void lsCommand() {
+		if (!TalkingClient.INSTANCE.isConnected()) {
+			System.out.println("Connect to a server first: connect <host>(:<port>)");
+			return;
+		}
 		System.out.println(TalkingClient.INSTANCE.getServerData().getChannels().keySet().stream().collect(Collectors.joining(" ")));
 	}
 
 	private void cdCommand(String replaceFirst) {
+		if (!TalkingClient.INSTANCE.isConnected()) {
+			System.out.println("Connect to a server first: connect <host>(:<port>)");
+			return;
+		}
 		Channel channel = TalkingClient.INSTANCE.getServerData().getChannels().values().stream().filter(c -> c.getName().equalsIgnoreCase(replaceFirst)).findFirst().get();
 		// TalkingClient.INSTANCE.getServerData().setCurrentChannelUuid(channel.getUuid());
 		TalkingClient.INSTANCE.getClient().write(C2S_S2C_ChangeChannel.to(channel.getUuid()));
 	}
 
 	private void sendCommand(String txt) {
+		if (!TalkingClient.INSTANCE.isConnected()) {
+			System.out.println("Connect to a server first: connect <host>(:<port>)");
+			return;
+		}
 		TalkingClient.INSTANCE.getClient().write(new C2S_S2C_MessagePacket(txt));
 	}
 

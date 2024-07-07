@@ -27,6 +27,8 @@ public class TalkingClient implements TalkingInstance {
 
 	public static TalkingClient INSTANCE = null;
 
+	private int localPort;
+	
 	private String remoteHost;
 	private int remotePort;
 	private P4JClient client;
@@ -41,9 +43,11 @@ public class TalkingClient implements TalkingInstance {
 
 	private ConsoleClient consoleClient;
 
-	public TalkingClient() throws IOException {
+	public TalkingClient(int localPort) throws IOException {
 		INSTANCE = this;
 
+		this.localPort = localPort;
+		
 		codec = Codecs.instance();
 		encryption = EncryptionManager.raw();
 		compression = CompressionManager.raw();
@@ -72,7 +76,7 @@ public class TalkingClient implements TalkingInstance {
 	}
 
 	public void disconnect() {
-		if (client.getClientStatus().equals(ClientStatus.LISTENING)) {
+		if (client != null && client.getClientStatus().equals(ClientStatus.LISTENING)) {
 			client.disconnect();
 			client = null;
 		}
@@ -91,7 +95,7 @@ public class TalkingClient implements TalkingInstance {
 			createClient();
 		}
 
-		client.bind();
+		client.bind(localPort);
 		System.out.println("Client bound on: " + client.getLocalInetSocketAddress());
 
 		System.out.println("connecting to: " + Inet4Address.getByName(remoteHost));
@@ -127,6 +131,14 @@ public class TalkingClient implements TalkingInstance {
 
 	public ConsoleClient getConsoleClient() {
 		return consoleClient;
+	}
+	
+	public void setLocalPort(int localPort) {
+		this.localPort = localPort;
+	}
+
+	public boolean isConnected() {
+		return client != null && client.getClientStatus().equals(ClientStatus.LISTENING);
 	}
 
 }

@@ -3,6 +3,7 @@ package lu.kbra.talking;
 import java.io.File;
 import java.io.IOException;
 
+import lu.pcy113.p4j.socket.client.ClientStatus;
 import lu.pcy113.pclib.logger.GlobalLogger;
 import lu.pcy113.pclib.logger.PCLogger;
 
@@ -15,8 +16,8 @@ public class TalkingMain {
 	private static TalkingInstance instance;
 
 	public static void main(String[] args) throws IOException {
-		System.setProperty("java.net.preferIPv4Stack" , "true");
-		
+		System.setProperty("java.net.preferIPv4Stack", "true");
+
 		try {
 			PCLogger.exportDefaultConfig("./config/logs.properties");
 			GlobalLogger.init(new File("./config/logs.properties"));
@@ -26,7 +27,7 @@ public class TalkingMain {
 		}
 
 		if (args.length < 1) {
-			GlobalLogger.info("Usage: java -jar TalkingMain.jar <type [server|client]> (<port>)");
+			GlobalLogger.info("Usage: java -jar TalkingMain.jar <type [server|client]> (<local port>)");
 			return;
 		}
 
@@ -37,6 +38,9 @@ public class TalkingMain {
 		}
 
 		int port = Consts.DEFAULT_PORT;
+		if (type.equals(TalkingInstanceType.CLIENT)) {
+			port = 0;
+		}
 		if (args.length > 1) {
 			port = Integer.parseInt(args[1]);
 		}
@@ -47,7 +51,7 @@ public class TalkingMain {
 			instance = new TalkingServer("0.0.0.0", port);
 			break;
 		case CLIENT:
-			instance = new TalkingClient();
+			instance = new TalkingClient(port);
 			break;
 		}
 	}

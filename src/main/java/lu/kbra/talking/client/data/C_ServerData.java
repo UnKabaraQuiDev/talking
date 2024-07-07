@@ -11,6 +11,8 @@ public class C_ServerData {
 
 	private UUID currentChannelUuid;
 
+	private List<C_RemoteUserData> remoteUsers;
+	
 	private Map<String, Channel> channels;
 
 	public C_ServerData(Map<String, Channel> channels, UUID current) {
@@ -37,6 +39,14 @@ public class C_ServerData {
 
 	public Channel getCurrentChannel() {
 		return channels.values().stream().filter(c -> c.getUuid().equals(currentChannelUuid)).findFirst().get();
+	}
+
+	public List<C_RemoteUserData> getRemoteUsers() {
+		return remoteUsers;
+	}
+
+	public void setRemoteUsers(List<C_RemoteUserData> remoteUsers) {
+		this.remoteUsers = remoteUsers;
 	}
 
 }
