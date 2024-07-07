@@ -17,6 +17,7 @@ import lu.kbra.talking.TalkingInstance;
 import lu.kbra.talking.consts.Codecs;
 import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.consts.Packets;
+import lu.kbra.talking.packets.C2S_S2C_ChangeChannelPacket;
 import lu.kbra.talking.packets.S2C_LoginPacket;
 import lu.kbra.talking.packets.S2C_LoginRefusedPacket;
 import lu.kbra.talking.server.client.TalkingServerClient;
@@ -56,7 +57,7 @@ public class TalkingServer implements TalkingInstance {
 		this.server = new P4JServer(codec, encryption, compression);
 		this.server.setClientManager(new ClientManager(server, (socket) -> new TalkingServerClient(socket, this.server, this)));
 
-		this.server.setEventManager(new AsyncEventManager(false));
+		// this.server.setEventManager(new AsyncEventManager(false));
 		this.server.getEventManager().register(new DefaultServerListener());
 
 		Packets.registerPackets(server.getPackets());
@@ -67,12 +68,14 @@ public class TalkingServer implements TalkingInstance {
 
 	public void incomingHandshake(TalkingServerClient sclient, S_UserData obj) {
 		sclient.setUserData(obj);
-		sclient.getUserData().setCurrentChannelUuid(serverData.getDefaultChannelUuid());
+		// sclient.getUserData().setCurrentChannelUuid(serverData.getDefaultChannelUuid());
 		Pair<Boolean, String> refusalReason = connectionManager.verify(sclient);
 		if (refusalReason.getKey()) {
 			GlobalLogger.info("Accepted connection: " + sclient.getUUID() + " = '" + sclient.getUserData().getUserName() + "' @ "
 					+ PCUtils.try_(() -> sclient.getSocketChannel().getRemoteAddress(), (e) -> e.getClass().getName() + ": " + e.getMessage()));
+			
 			sclient.write(new S2C_LoginPacket(serverData.getClientView(obj)));
+			new C2S_S2C_ChangeChannelPacket().serverRead(sclient, TalkingServer.INSTANCE.getServerData().getDefaultChannelUuid()); // fake packet received from client
 		} else {
 			GlobalLogger.info("Refused connection: " + refusalReason.getValue());
 			sclient.write(new S2C_LoginRefusedPacket(refusalReason.getValue()));

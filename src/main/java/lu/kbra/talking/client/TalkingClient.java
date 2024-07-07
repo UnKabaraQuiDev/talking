@@ -14,7 +14,7 @@ import lu.kbra.talking.consts.Codecs;
 import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.consts.Packets;
 import lu.kbra.talking.packets.C2S_HandshakePacket;
-import lu.kbra.talking.server.client.DefaultClientListener;
+
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;

@@ -14,7 +14,7 @@ public class C_RemoteUserDataEncoder extends DefaultObjectEncoder<C_RemoteUserDa
 
 		super.putHeader(head, bb);
 
-		bb.put(cm.encode(false, obj.getUuid()));
+		bb.put(cm.encode(false, obj.getUUID()));
 		bb.put(cm.encode(true, obj.getPublicKey()));
 
 		bb.flip();
@@ -24,7 +24,7 @@ public class C_RemoteUserDataEncoder extends DefaultObjectEncoder<C_RemoteUserDa
 
 	@Override
 	public int estimateSize(boolean head, C_RemoteUserData obj) {
-		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getUuid()) + cm.estimateSize(true, obj.getPublicKey());
+		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getUUID()) + cm.estimateSize(true, obj.getPublicKey());
 	}
 
 }

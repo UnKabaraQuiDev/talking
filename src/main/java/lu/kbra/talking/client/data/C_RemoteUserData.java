@@ -14,7 +14,7 @@ public class C_RemoteUserData {
 		this.publicKey = publicKey;
 	}
 
-	public UUID getUuid() {
+	public UUID getUUID() {
 		return uuid;
 	}
 

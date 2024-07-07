@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import lu.kbra.talking.client.data.C_RemoteUserData;
 import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.data.Channel;
-import lu.kbra.talking.packets.C2S_S2C_ChangeChannel;
+import lu.kbra.talking.packets.C2S_S2C_ChangeChannelPacket;
 import lu.kbra.talking.packets.C2S_S2C_MessagePacket;
 
 public class ConsoleClient extends Thread implements Runnable {
@@ -104,8 +105,7 @@ public class ConsoleClient extends Thread implements Runnable {
 			return;
 		}
 		Channel channel = TalkingClient.INSTANCE.getServerData().getChannels().values().stream().filter(c -> c.getName().equalsIgnoreCase(replaceFirst)).findFirst().get();
-		// TalkingClient.INSTANCE.getServerData().setCurrentChannelUuid(channel.getUuid());
-		TalkingClient.INSTANCE.getClient().write(C2S_S2C_ChangeChannel.to(channel.getUuid()));
+		TalkingClient.INSTANCE.getClient().write(C2S_S2C_ChangeChannelPacket.to(channel.getUuid()));
 	}
 
 	private void sendCommand(String txt) {
@@ -113,7 +113,10 @@ public class ConsoleClient extends Thread implements Runnable {
 			System.out.println("Connect to a server first: connect <host>(:<port>)");
 			return;
 		}
-		TalkingClient.INSTANCE.getClient().write(new C2S_S2C_MessagePacket(txt));
+
+		for (C_RemoteUserData u : TalkingClient.INSTANCE.getServerData().getRemoteUsers()) {
+			TalkingClient.INSTANCE.getClient().write(C2S_S2C_MessagePacket.c2s(u, txt));
+		}
 	}
 
 	public void print() {
