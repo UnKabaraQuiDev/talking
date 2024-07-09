@@ -10,7 +10,6 @@ import lu.pcy113.p4j.socket.server.ClientManager;
 import lu.pcy113.p4j.socket.server.P4JServer;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.datastructure.pair.Pair;
-import lu.pcy113.pclib.listener.AsyncEventManager;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
@@ -22,7 +21,6 @@ import lu.kbra.talking.packets.S2C_LoginPacket;
 import lu.kbra.talking.packets.S2C_LoginRefusedPacket;
 import lu.kbra.talking.server.client.TalkingServerClient;
 import lu.kbra.talking.server.conn.ConnectionManager;
-import lu.kbra.talking.server.conn.verifier.BlacklistConnectionVerifier;
 import lu.kbra.talking.server.conn.verifier.VersionConnectionVerifier;
 import lu.kbra.talking.server.data.S_ServerData;
 import lu.kbra.talking.server.data.S_UserData;

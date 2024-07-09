@@ -68,11 +68,11 @@ public class MessagesPanel extends JPanel {
 			TalkingClient.INSTANCE.getClient().write(C2S_S2C_MessagePacket.c2s(u, msg));
 		}
 
-		addMessage("You (" + TalkingClient.INSTANCE.getUserData().getUserName() + ")", msg);
+		addMessage("You (" + TalkingClient.INSTANCE.getUserData().getUserName() + ")", msg, true);
 	}
 
-	public void addMessage(String username, String content) {
-		Message message = new Message(username, content);
+	public void addMessage(String username, String content, boolean isSentByUser) {
+		Message message = new Message(username, content, isSentByUser);
 		messagesListModel.addElement(message);
 	}
 

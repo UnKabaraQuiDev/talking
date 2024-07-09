@@ -72,7 +72,6 @@ public class TalkingClient implements TalkingInstance {
 			keyPairGenerator.initialize(2048, secureRandom); // 2048-bit key size
 
 			return keyPairGenerator.generateKeyPair();
-
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			System.exit(0);

@@ -2,11 +2,11 @@ package lu.kbra.talking.server.client;
 
 import java.nio.channels.SocketChannel;
 
-import lu.kbra.talking.server.TalkingServer;
-import lu.kbra.talking.server.data.S_UserData;
-
 import lu.pcy113.p4j.socket.server.P4JServer;
 import lu.pcy113.p4j.socket.server.ServerClient;
+
+import lu.kbra.talking.server.TalkingServer;
+import lu.kbra.talking.server.data.S_UserData;
 
 public class TalkingServerClient extends ServerClient {
 

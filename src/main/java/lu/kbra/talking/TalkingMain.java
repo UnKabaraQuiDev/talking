@@ -3,11 +3,12 @@ package lu.kbra.talking;
 import java.io.File;
 import java.io.IOException;
 
+import lu.pcy113.pclib.logger.GlobalLogger;
+import lu.pcy113.pclib.logger.PCLogger;
+
 import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.consts.Consts;
 import lu.kbra.talking.server.TalkingServer;
-import lu.pcy113.pclib.logger.GlobalLogger;
-import lu.pcy113.pclib.logger.PCLogger;
 
 public class TalkingMain {
 

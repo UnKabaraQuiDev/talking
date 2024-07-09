@@ -3,10 +3,10 @@ package lu.kbra.talking.consts;
 import lu.pcy113.p4j.packets.PacketManager;
 
 import lu.kbra.talking.packets.C2S_HandshakePacket;
+import lu.kbra.talking.packets.C2S_S2C_ChangeChannelPacket;
 import lu.kbra.talking.packets.C2S_S2C_MessagePacket;
 import lu.kbra.talking.packets.S2C_ChannelJoinPacket;
 import lu.kbra.talking.packets.S2C_ChannelLeavePacket;
-import lu.kbra.talking.packets.C2S_S2C_ChangeChannelPacket;
 import lu.kbra.talking.packets.S2C_LoginPacket;
 import lu.kbra.talking.packets.S2C_LoginRefusedPacket;
 

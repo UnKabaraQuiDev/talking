@@ -12,14 +12,14 @@ import lu.pcy113.jbcodec.encoder.PairEncoder;
 import lu.pcy113.jbcodec.encoder.TripletEncoder;
 import lu.pcy113.jbcodec.encoder.UUIDEncoder;
 
-import lu.kbra.talking.codec.ChannelDecoder;
-import lu.kbra.talking.codec.ChannelEncoder;
-import lu.kbra.talking.codec.RSAPublicKeyDecoder;
-import lu.kbra.talking.codec.RSAPublicKeyEncoder;
 import lu.kbra.talking.codec.C_RemoteUserDataDecoder;
 import lu.kbra.talking.codec.C_RemoteUserDataEncoder;
 import lu.kbra.talking.codec.C_ServerDataDecoder;
 import lu.kbra.talking.codec.C_ServerDataEncoder;
+import lu.kbra.talking.codec.ChannelDecoder;
+import lu.kbra.talking.codec.ChannelEncoder;
+import lu.kbra.talking.codec.RSAPublicKeyDecoder;
+import lu.kbra.talking.codec.RSAPublicKeyEncoder;
 import lu.kbra.talking.codec.S_UserDataDecoder;
 import lu.kbra.talking.codec.S_UserDataEncoder;
 

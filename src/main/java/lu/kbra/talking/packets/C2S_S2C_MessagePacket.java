@@ -82,7 +82,7 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, U
 
 			Cipher encryptCipher = Cipher.getInstance("RSA");
 			encryptCipher.init(Cipher.DECRYPT_MODE, TalkingClient.INSTANCE.getUserData().getPrivateKey());
-			TalkingClient.INSTANCE.getFrame().getMessagesPanel().addMessage(username, new String(encryptCipher.doFinal(Base64.getDecoder().decode(content.getBytes()))));
+			TalkingClient.INSTANCE.getFrame().getMessagesPanel().addMessage(username, new String(encryptCipher.doFinal(Base64.getDecoder().decode(content.getBytes()))), false);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new RuntimeException(e);
 		}

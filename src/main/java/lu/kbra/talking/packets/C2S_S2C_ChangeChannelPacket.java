@@ -11,7 +11,6 @@ import lu.pcy113.pclib.datastructure.triplet.Triplets;
 
 import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.client.data.C_RemoteUserData;
-import lu.kbra.talking.client.frame.AppFrame;
 import lu.kbra.talking.data.Channel;
 import lu.kbra.talking.packets.impl.C2S_Talking_Packet;
 import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
