@@ -87,7 +87,7 @@ public class TalkingClient implements TalkingInstance {
 		}
 	}
 
-	public void connect(String username, String password, String host, int port) throws IOException {
+	public void connect(String username, String password, String host, int port) throws Exception {
 		if (client != null && client.getClientStatus().equals(ClientStatus.LISTENING)) {
 			System.out.println("Disconnect before reconnecting");
 			return;

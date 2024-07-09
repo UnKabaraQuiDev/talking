@@ -67,6 +67,7 @@ public class AppFrame extends JFrame {
 
 	public void quitRequested() {
 		TalkingClient.INSTANCE.disconnect();
+		dispose();
 	}
 
 	public ChannelsPanel getChannelsPanel() {

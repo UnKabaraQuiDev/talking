@@ -93,11 +93,11 @@ public class ConnectDialog extends JDialog {
 
 		try {
 			TalkingClient.INSTANCE.connect(username, password, ip, port);
-		} catch (IOException e) {
+			dispose();
+		} catch (Exception e) {
 			JOptionPane.showConfirmDialog(null, "An error occured while trying to connect: " + e.getMessage() + ".", "Could not connect", JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
-		dispose();
 	}
 
 }
