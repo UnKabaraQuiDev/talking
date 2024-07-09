@@ -4,7 +4,6 @@ import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.datastructure.triplet.Triplet;
 import lu.pcy113.pclib.datastructure.triplet.Triplets;
 
-import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
 import lu.kbra.talking.server.client.TalkingServerClient;
 
@@ -29,7 +28,6 @@ public class S2C_ChannelJoinPacket implements S2C_Talking_Packet<Triplet<String,
 		} else {
 			System.out.println("User: " + obj.getFirst() + " joined channel (source): " + obj.getThird());
 		}
-		TalkingClient.INSTANCE.getConsoleClient().print();
 	}
 
 	@Override

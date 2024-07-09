@@ -46,8 +46,7 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, U
 	public Triplet<UUID, UUID, String> clientWrite(P4JClient client) {
 		try {
 			Cipher encryptCipher = Cipher.getInstance("RSA");
-			encryptCipher.init(Cipher.ENCRYPT_MODE, remotePublicKey); // need to use public key of other
-			System.err.println("into: " + Base64.getEncoder().encodeToString(encryptCipher.doFinal(text.getBytes())));
+			encryptCipher.init(Cipher.ENCRYPT_MODE, remotePublicKey);
 			return Triplets.readOnly(TalkingClient.INSTANCE.getServerData().getCurrentChannelUuid(), remoteTarget, Base64.getEncoder().encodeToString(encryptCipher.doFinal(text.getBytes())));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new RuntimeException(e);
@@ -83,8 +82,7 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, U
 
 			Cipher encryptCipher = Cipher.getInstance("RSA");
 			encryptCipher.init(Cipher.DECRYPT_MODE, TalkingClient.INSTANCE.getUserData().getPrivateKey());
-			System.out.println("[" + username + "] << " + new String(encryptCipher.doFinal(Base64.getDecoder().decode(content.getBytes()))));
-			TalkingClient.INSTANCE.getConsoleClient().print();
+			TalkingClient.INSTANCE.getFrame().getMessagesPanel().addMessage(username, new String(encryptCipher.doFinal(Base64.getDecoder().decode(content.getBytes()))));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new RuntimeException(e);
 		}

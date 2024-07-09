@@ -56,4 +56,9 @@ public class C_UserData {
 		this.currentChannelUuid = currentChannel;
 	}
 
+	@Override
+	public String toString() {
+		return "User: " + userName + " - " + hash + " - " + version + " - " + publicKey + " - " + privateKey + " - " + currentChannelUuid;
+	}
+
 }

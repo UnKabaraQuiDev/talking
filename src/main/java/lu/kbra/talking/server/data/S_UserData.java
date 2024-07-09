@@ -16,11 +16,11 @@ public class S_UserData {
 
 	private UUID currentChannelUuid;
 
-	public S_UserData(String userName, String hash, String version, PublicKey publicKey2) {
+	public S_UserData(String userName, String hash, String version, PublicKey publicKey) {
 		this.userName = userName;
 		this.hash = hash;
 		this.version = version;
-		this.publicKey = publicKey2;
+		this.publicKey = publicKey;
 	}
 
 	public String getVersion() {

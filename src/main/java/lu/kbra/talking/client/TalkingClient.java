@@ -6,14 +6,7 @@ import java.net.InetSocketAddress;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-
-import lu.kbra.talking.TalkingInstance;
-import lu.kbra.talking.client.data.C_ServerData;
-import lu.kbra.talking.client.data.C_UserData;
-import lu.kbra.talking.consts.Codecs;
-import lu.kbra.talking.consts.Consts;
-import lu.kbra.talking.consts.Packets;
-import lu.kbra.talking.packets.C2S_HandshakePacket;
+import java.security.SecureRandom;
 
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
@@ -23,12 +16,21 @@ import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
+import lu.kbra.talking.TalkingInstance;
+import lu.kbra.talking.client.data.C_ServerData;
+import lu.kbra.talking.client.data.C_UserData;
+import lu.kbra.talking.client.frame.AppFrame;
+import lu.kbra.talking.consts.Codecs;
+import lu.kbra.talking.consts.Consts;
+import lu.kbra.talking.consts.Packets;
+import lu.kbra.talking.packets.C2S_HandshakePacket;
+
 public class TalkingClient implements TalkingInstance {
 
 	public static TalkingClient INSTANCE = null;
 
 	private int localPort;
-	
+
 	private String remoteHost;
 	private int remotePort;
 	private P4JClient client;
@@ -41,21 +43,18 @@ public class TalkingClient implements TalkingInstance {
 
 	private C_ServerData serverData;
 
-	private ConsoleClient consoleClient;
+	private AppFrame frame;
 
 	public TalkingClient(int localPort) throws IOException {
 		INSTANCE = this;
 
 		this.localPort = localPort;
-		
+
 		codec = Codecs.instance();
 		encryption = EncryptionManager.raw();
 		compression = CompressionManager.raw();
 
-		KeyPair keys = genKeys();
-		this.userData = new C_UserData("name", "hash", Consts.VERSION, keys.getPublic(), keys.getPrivate());
-
-		this.consoleClient = new ConsoleClient();
+		this.frame = new AppFrame();
 	}
 
 	private void createClient() {
@@ -64,14 +63,20 @@ public class TalkingClient implements TalkingInstance {
 		Packets.registerPackets(client.getPackets());
 	}
 
-	private KeyPair genKeys() {
+	public static KeyPair genKeys(byte[] seed) {
 		try {
-			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+			secureRandom.setSeed(seed);
 
-			kpg.initialize(2048);
-			return kpg.generateKeyPair();
+			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+			keyPairGenerator.initialize(2048, secureRandom); // 2048-bit key size
+
+			return keyPairGenerator.generateKeyPair();
+
 		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
+			System.exit(0);
+			return null;
 		}
 	}
 
@@ -82,11 +87,16 @@ public class TalkingClient implements TalkingInstance {
 		}
 	}
 
-	public void connect(String host, int port) throws IOException {
+	public void connect(String username, String password, String host, int port) throws IOException {
 		if (client != null && client.getClientStatus().equals(ClientStatus.LISTENING)) {
 			System.out.println("Disconnect before reconnecting");
 			return;
 		}
+
+		final String hash = PCUtils.hashString(username + password, "SHA-256");
+		KeyPair keys = genKeys(hash.getBytes());
+		this.userData = new C_UserData(username, hash, Consts.VERSION, keys.getPublic(), keys.getPrivate());
+		System.out.println("User data: " + userData);
 
 		this.remoteHost = host;
 		this.remotePort = port;
@@ -129,12 +139,12 @@ public class TalkingClient implements TalkingInstance {
 		this.serverData = obj;
 	}
 
-	public ConsoleClient getConsoleClient() {
-		return consoleClient;
-	}
-	
 	public void setLocalPort(int localPort) {
 		this.localPort = localPort;
+	}
+
+	public AppFrame getFrame() {
+		return frame;
 	}
 
 	public boolean isConnected() {
