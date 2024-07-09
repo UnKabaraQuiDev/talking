@@ -1,23 +1,25 @@
 package lu.kbra.talking.packets;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import lu.pcy113.p4j.packets.s2c.S2CPacket;
 import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.pclib.datastructure.triplet.Triplet;
-import lu.pcy113.pclib.datastructure.triplet.Triplets;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.datastructure.pair.Pair;
+import lu.pcy113.pclib.datastructure.pair.Pairs;
 
 import lu.kbra.talking.client.TalkingClient;
-import lu.kbra.talking.client.data.C_RemoteUserData;
 import lu.kbra.talking.data.Channel;
 import lu.kbra.talking.packets.impl.C2S_Talking_Packet;
 import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
 import lu.kbra.talking.server.TalkingServer;
 import lu.kbra.talking.server.client.TalkingServerClient;
 
-public class C2S_S2C_ChangeChannelPacket implements C2S_Talking_Packet<UUID>, S2C_Talking_Packet<Triplet<Boolean, Object, List<C_RemoteUserData>>> {
+public class C2S_S2C_ChangeChannelPacket implements C2S_Talking_Packet<UUID>, S2C_Talking_Packet<Pair<Boolean, Object>> {
 
 	public C2S_S2C_ChangeChannelPacket() {
 	}
@@ -39,26 +41,28 @@ public class C2S_S2C_ChangeChannelPacket implements C2S_Talking_Packet<UUID>, S2
 	public void serverRead(TalkingServerClient sclient, UUID targetChannelUuid) {
 		final Channel channel = TalkingServer.INSTANCE.getServerData().getChannel(targetChannelUuid);
 		final boolean firstTransfer = sclient.getUserData().getCurrentChannelUuid() == null;
-		
+
 		if (channel.hasAccess(sclient.getUserData())) {
-			sclient.write(C2S_S2C_ChangeChannelPacket.accepted(targetChannelUuid,
-					TalkingServer.INSTANCE.getServer().getConnectedClients().stream().filter((c) -> Objects.equals(((TalkingServerClient) c).getUserData().getCurrentChannelUuid(), targetChannelUuid)).filter((c) -> !c.equals(sclient))
-							.map((c) -> ((TalkingServerClient) c).getUserData().getRemoteUserData((TalkingServerClient) c)).collect(Collectors.toList())));
+			sclient.write(C2S_S2C_ChangeChannelPacket.accepted(targetChannelUuid));
+			sclient.write(
+					S2C_UpdateRemoteUserDataListPacket.replace(TalkingServer.INSTANCE.getServer().getConnectedClients().stream().filter((c) -> Objects.equals(((TalkingServerClient) c).getUserData().getCurrentChannelUuid(), targetChannelUuid))
+							.filter((c) -> !c.equals(sclient)).map((c) -> ((TalkingServerClient) c).getUserData().getRemoteUserData((TalkingServerClient) c)).collect(Collectors.toList())));
 
 			// signal channel left
 			if (!firstTransfer) { // transfer to default channel
-				TalkingServer.INSTANCE.getServer().broadcastIf(S2C_ChannelLeavePacket.switch_(sclient.getUserData().getUserName(), channel.getName()),
+				TalkingServer.INSTANCE.getServer().broadcastIf(
+						PCUtils.asArrayList(S2C_ChannelLeavePacket.switch_(sclient.getUserData().getUserName(), channel.getName()), S2C_UpdateRemoteUserDataListPacket.remove(sclient.getUserData().getRemoteUserData(sclient))),
 						(c) -> !c.equals(sclient) && ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(sclient.getUserData().getCurrentChannelUuid()));
 			}
 
 			// signal channel joined
-			if (!firstTransfer) {
-				TalkingServer.INSTANCE.getServer().broadcastIf(S2C_ChannelJoinPacket.switch_(sclient.getUserData().getUserName(), sclient.getUserData().getCurrentChannel(TalkingServer.INSTANCE.getServerData()).getName()),
-						(c) -> !c.equals(sclient) && ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(targetChannelUuid));
+			List<S2CPacket<?>> joinPackets = PCUtils.asArrayList(S2C_UpdateRemoteUserDataListPacket.add(sclient.getUserData().getRemoteUserData(sclient)));
+			if (firstTransfer) {
+				joinPackets.add(S2C_ChannelJoinPacket.join(sclient.getUserData().getUserName(), null));
 			} else { // transfer to default channel
-				TalkingServer.INSTANCE.getServer().broadcastIf(S2C_ChannelJoinPacket.join(sclient.getUserData().getUserName(), null),
-						(c) -> !c.equals(sclient) && ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(targetChannelUuid));
+				joinPackets.add(S2C_ChannelJoinPacket.switch_(sclient.getUserData().getUserName(), sclient.getUserData().getCurrentChannel(TalkingServer.INSTANCE.getServerData()).getName()));
 			}
+			TalkingServer.INSTANCE.getServer().broadcastIf(joinPackets, (c) -> !c.equals(sclient) && ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(targetChannelUuid));
 
 			sclient.getUserData().setCurrentChannelUuid(targetChannelUuid);
 		} else {
@@ -72,33 +76,33 @@ public class C2S_S2C_ChangeChannelPacket implements C2S_Talking_Packet<UUID>, S2
 
 	// S2C side - - - - - -
 
-	private Triplet<Boolean, Object, List<C_RemoteUserData>> response;
+	private Pair<Boolean, Object> response;
 
-	private C2S_S2C_ChangeChannelPacket(boolean success, Object obj, List<C_RemoteUserData> memberList) {
-		this.response = Triplets.readOnly(success, obj, memberList);
+	private C2S_S2C_ChangeChannelPacket(boolean success, Object obj) {
+		this.response = Pairs.readOnly(success, obj);
 	}
 
-	public static C2S_S2C_ChangeChannelPacket accepted(UUID target, List<C_RemoteUserData> memberList) {
-		return new C2S_S2C_ChangeChannelPacket(true, target, memberList);
+	public static C2S_S2C_ChangeChannelPacket accepted(UUID target) {
+		return new C2S_S2C_ChangeChannelPacket(true, target);
 	}
 
 	public static C2S_S2C_ChangeChannelPacket denied(Object reason) {
-		return new C2S_S2C_ChangeChannelPacket(false, reason, null);
+		return new C2S_S2C_ChangeChannelPacket(false, reason);
 	}
 
 	@Override
-	public void clientRead(P4JClient client, Triplet<Boolean, Object, List<C_RemoteUserData>> obj) {
-		if (obj.getFirst()) {
-			TalkingClient.INSTANCE.getServerData().setCurrentChannelUuid((UUID) obj.getSecond());
-			TalkingClient.INSTANCE.getServerData().setRemoteUsers(obj.getThird());
-			System.out.println("Changed channel to: " + TalkingClient.INSTANCE.getServerData().getCurrentChannel().getName() + ", total users: " + obj.getThird().size());
+	public void clientRead(P4JClient client, Pair<Boolean, Object> obj) {
+		if (obj.getKey()) {
+			TalkingClient.INSTANCE.getServerData().setCurrentChannelUuid((UUID) obj.getValue());
+			System.out.println("Changed channel to: " + TalkingClient.INSTANCE.getServerData().getCurrentChannel().getName());
+			TalkingClient.INSTANCE.getFrame().getMessagesPanel().clearMessages();
 		} else {
-			System.out.println("Couldn't change channel: " + obj.getSecond());
+			System.out.println("Couldn't change channel: " + obj.getValue());
 		}
 	}
 
 	@Override
-	public Triplet<Boolean, Object, List<C_RemoteUserData>> serverWrite(TalkingServerClient client) {
+	public Pair<Boolean, Object> serverWrite(TalkingServerClient client) {
 		return response;
 	}
 

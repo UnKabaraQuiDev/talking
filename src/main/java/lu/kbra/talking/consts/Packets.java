@@ -9,6 +9,7 @@ import lu.kbra.talking.packets.S2C_ChannelJoinPacket;
 import lu.kbra.talking.packets.S2C_ChannelLeavePacket;
 import lu.kbra.talking.packets.S2C_LoginPacket;
 import lu.kbra.talking.packets.S2C_LoginRefusedPacket;
+import lu.kbra.talking.packets.S2C_UpdateRemoteUserDataListPacket;
 
 public final class Packets {
 
@@ -20,6 +21,7 @@ public final class Packets {
 		packets.register(C2S_S2C_ChangeChannelPacket.class, 0x05);
 		packets.register(S2C_ChannelLeavePacket.class, 0x06);
 		packets.register(S2C_ChannelJoinPacket.class, 0x07);
+		packets.register(S2C_UpdateRemoteUserDataListPacket.class, 0x08);
 	}
 
 }
