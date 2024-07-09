@@ -1,8 +1,12 @@
 package lu.kbra.talking.client;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
+import org.jline.reader.impl.history.DefaultHistory;
 
 import lu.kbra.talking.client.data.C_RemoteUserData;
 import lu.kbra.talking.consts.Consts;
@@ -14,23 +18,32 @@ public class ConsoleClient extends Thread implements Runnable {
 
 	private volatile boolean running = true;
 
-	private Scanner scanner;
-
 	public ConsoleClient() {
-		this.scanner = new Scanner(System.in);
 		start();
 	}
 
+	private String prompt;
+
 	@Override
 	public void run() {
-		while (running && this.scanner.hasNextLine()) {
+		LineReader reader = LineReaderBuilder.builder().history(new DefaultHistory()).build();
+
+		while (running) {
+			print();
+			
 			try {
-				String line = scanner.nextLine();
+				String line = reader.readLine(prompt);
 				computeCommand(line);
+			} catch (UserInterruptException e) {
+				try {
+					computeCommand("exit");
+				} catch (Exception e1) {
+					e1.printStackTrace();
+					System.exit(1);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			print();
 		}
 	}
 
@@ -45,7 +58,9 @@ public class ConsoleClient extends Thread implements Runnable {
 		} else if (tokens[0].equalsIgnoreCase("ll")) {
 			llCommand();
 		} else if (tokens[0].equalsIgnoreCase("exit")) {
-			disconnectCommand();
+			if (TalkingClient.INSTANCE.isConnected()) {
+				disconnectCommand();
+			}
 			running = false;
 		} else if (tokens[0].equalsIgnoreCase("connect")) {
 			connectCommand(tokens[1]);
@@ -53,7 +68,14 @@ public class ConsoleClient extends Thread implements Runnable {
 			disconnectCommand();
 		} else if (tokens[0].equalsIgnoreCase("bind")) {
 			bindCommand(Integer.parseInt(tokens[1]));
+		} else if (tokens[0].equalsIgnoreCase("clear")) {
+			clear();
 		}
+	}
+
+	public void clear() {
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
 	}
 
 	private void bindCommand(int localPort) {
@@ -121,9 +143,9 @@ public class ConsoleClient extends Thread implements Runnable {
 
 	public void print() {
 		if (TalkingClient.INSTANCE.getServerData() != null && TalkingClient.INSTANCE.getClient() != null && TalkingClient.INSTANCE.getClient().getClientServer() != null) {
-			System.out.print(TalkingClient.INSTANCE.getClient().getClientServer().getRemoteInetSocketAddress().toString() + "/" + TalkingClient.INSTANCE.getServerData().getCurrentChannel().getName() + ">");
+			prompt = TalkingClient.INSTANCE.getClient().getClientServer().getRemoteInetSocketAddress().toString() + "/" + TalkingClient.INSTANCE.getServerData().getCurrentChannel().getName() + ">";
 		} else {
-			System.out.print("/>");
+			prompt = "/>";
 		}
 	}
 
