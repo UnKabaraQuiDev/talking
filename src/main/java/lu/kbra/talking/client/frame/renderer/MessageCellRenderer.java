@@ -1,6 +1,7 @@
 package lu.kbra.talking.client.frame.renderer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JLabel;
@@ -8,6 +9,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
+import javax.swing.border.MatteBorder;
 
 import lu.kbra.talking.client.frame.data.Message;
 
@@ -20,6 +22,7 @@ public class MessageCellRenderer extends JPanel implements ListCellRenderer<Mess
 		label = new JLabel();
 		label.setOpaque(true);
 		add(label, BorderLayout.CENTER);
+		setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
 	}
 
 	@Override

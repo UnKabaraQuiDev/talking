@@ -114,7 +114,7 @@ public class TalkingClient implements TalkingInstance {
 		final String privateHash = PCUtils.hashString(username + password, "SHA-256");
 		KeyPair keys = genKeys(privateHash.getBytes());
 		final String publicHash = PCUtils.hashString(username + keys.getPublic().getEncoded(), "SHA-256");
-		this.userData = new C_UserData(username, publicHash, Consts.VERSION, keys.getPublic(), keys.getPrivate());
+		this.userData = new C_UserData(username, privateHash, publicHash, Consts.VERSION, keys.getPublic(), keys.getPrivate());
 		System.out.println("User data: " + userData);
 
 		this.remoteHost = host;

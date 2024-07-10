@@ -63,6 +63,14 @@ public class S2C_UpdateRemoteUserDataListPacket implements S2C_Talking_Packet<Pa
 			System.out.println("Replaced remote users for: " + list.size() + " new ones");
 		}
 
+		for (C_RemoteUserData u : list) {
+			if (u.getPublicHash().equals(TalkingClient.INSTANCE.getUserData().getPublicHash())) {
+				TalkingClient.INSTANCE.getUserData().update(u);
+			}
+		}
+
+		TalkingClient.INSTANCE.getServerData().getRemoteUsers().removeIf((c) -> c.getPublicHash().equals(TalkingClient.INSTANCE.getUserData().getPublicHash()));
+
 		TalkingClient.INSTANCE.getFrame().getStatisticsPanel().set("channel.users.count", TalkingClient.INSTANCE.getServerData().getRemoteUsers().size());
 	}
 

@@ -25,8 +25,8 @@ import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.client.data.C_RemoteUserData;
 import lu.kbra.talking.client.frame.data.Message;
 import lu.kbra.talking.client.frame.renderer.MessageCellRenderer;
-import lu.kbra.talking.packets.C2S_S2C_MessagePacket;
 import lu.kbra.talking.packets.C2S_AskServerTrustPacket;
+import lu.kbra.talking.packets.C2S_S2C_MessagePacket;
 
 public class MessagesPanel extends JPanel {
 
@@ -99,7 +99,7 @@ public class MessagesPanel extends JPanel {
 		if (selectedMessage == null) {
 			return;
 		}
-		
+
 		TalkingClient.INSTANCE.getClient().write(C2S_AskServerTrustPacket.ask(selectedMessage.getSenderUuid()));
 	}
 
@@ -129,7 +129,9 @@ public class MessagesPanel extends JPanel {
 	protected void send() {
 		final String msg = inputField.getText().trim();
 
-		inputField.setText("");
+		if (!TalkingClient.INSTANCE.isConnected()) {
+			return;
+		}
 
 		if (msg.isEmpty()) {
 			return;
@@ -140,6 +142,8 @@ public class MessagesPanel extends JPanel {
 		}
 
 		addMessage("You (" + TalkingClient.INSTANCE.getUserData().getUserName() + ")", null, msg, true);
+
+		inputField.setText("");
 	}
 
 	public void addMessage(String username, UUID sender, String content, boolean isSentByUser) {
@@ -149,7 +153,7 @@ public class MessagesPanel extends JPanel {
 			C_RemoteUserData u = remoteUser.get();
 			messagesListModel.addElement(new Message(username, u.isServerTrusted(), TalkingClient.INSTANCE.isClientTrusted(u), content, isSentByUser, u.getUUID()));
 		} else {
-			messagesListModel.addElement(new Message(username, false, isSentByUser ? true : false, content, isSentByUser, null));
+			messagesListModel.addElement(new Message(username, isSentByUser ? TalkingClient.INSTANCE.getUserData().isServerTrusted() : false, isSentByUser ? true : false, content, isSentByUser, null));
 		}
 	}
 

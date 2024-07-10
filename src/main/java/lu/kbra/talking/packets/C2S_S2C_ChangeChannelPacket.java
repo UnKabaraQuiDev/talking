@@ -5,18 +5,17 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import lu.pcy113.p4j.packets.s2c.S2CPacket;
-import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.datastructure.pair.Pair;
-import lu.pcy113.pclib.datastructure.pair.Pairs;
-
 import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.data.Channel;
 import lu.kbra.talking.packets.impl.C2S_Talking_Packet;
 import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
 import lu.kbra.talking.server.TalkingServer;
 import lu.kbra.talking.server.client.TalkingServerClient;
+import lu.pcy113.p4j.packets.s2c.S2CPacket;
+import lu.pcy113.p4j.socket.client.P4JClient;
+import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.datastructure.pair.Pair;
+import lu.pcy113.pclib.datastructure.pair.Pairs;
 
 public class C2S_S2C_ChangeChannelPacket implements C2S_Talking_Packet<UUID>, S2C_Talking_Packet<Pair<Boolean, Object>> {
 
@@ -43,15 +42,15 @@ public class C2S_S2C_ChangeChannelPacket implements C2S_Talking_Packet<UUID>, S2
 
 		if (channel.hasAccess(sclient.getUserData())) {
 			sclient.write(C2S_S2C_ChangeChannelPacket.accepted(targetChannelUuid));
-			sclient.write(
-					S2C_UpdateRemoteUserDataListPacket.replace(TalkingServer.INSTANCE.getServer().getConnectedClients().stream().filter((c) -> Objects.equals(((TalkingServerClient) c).getUserData().getCurrentChannelUuid(), targetChannelUuid))
-							.filter((c) -> !c.equals(sclient)).map((c) -> ((TalkingServerClient) c).getUserData().getRemoteUserData((TalkingServerClient) c)).collect(Collectors.toList())));
+			sclient.write(S2C_UpdateRemoteUserDataListPacket
+					.replace(TalkingServer.INSTANCE.getServer().getConnectedClients().stream().filter((c) -> Objects.equals(((TalkingServerClient) c).getUserData().getCurrentChannelUuid(), targetChannelUuid))
+							.map((c) -> ((TalkingServerClient) c).getUserData().getRemoteUserData((TalkingServerClient) c)).collect(Collectors.toList())));
 
 			// signal channel left
 			if (!firstTransfer) { // transfer to default channel
 				TalkingServer.INSTANCE.getServer().broadcastIf(
 						PCUtils.asArrayList(S2C_ChannelLeavePacket.switch_(sclient.getUserData().getUserName(), channel.getName()), S2C_UpdateRemoteUserDataListPacket.remove(sclient.getUserData().getRemoteUserData(sclient))),
-						(c) -> !c.equals(sclient) && ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(sclient.getUserData().getCurrentChannelUuid()));
+						(c) -> ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(sclient.getUserData().getCurrentChannelUuid()));
 			}
 
 			// signal channel joined
@@ -62,6 +61,8 @@ public class C2S_S2C_ChangeChannelPacket implements C2S_Talking_Packet<UUID>, S2
 				joinPackets.add(S2C_ChannelJoinPacket.switch_(sclient.getUserData().getUserName(), sclient.getUserData().getCurrentChannel(TalkingServer.INSTANCE.getServerData()).getName()));
 			}
 			TalkingServer.INSTANCE.getServer().broadcastIf(joinPackets, (c) -> !c.equals(sclient) && ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(targetChannelUuid));
+
+			sclient.write(S2C_UpdateRemoteUserDataListPacket.add(sclient.getUserData().getRemoteUserData(sclient)));
 
 			sclient.getUserData().setCurrentChannelUuid(targetChannelUuid);
 		} else {

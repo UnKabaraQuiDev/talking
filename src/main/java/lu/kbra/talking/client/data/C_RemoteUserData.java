@@ -5,10 +5,10 @@ import java.util.UUID;
 
 public class C_RemoteUserData {
 
-	private boolean serverTrusted;
-	private UUID uuid;
-	private String publicHash;
-	private PublicKey publicKey;
+	private final boolean serverTrusted;
+	private final UUID uuid;
+	private final String publicHash;
+	private final PublicKey publicKey;
 
 	public C_RemoteUserData(boolean serverTrusted, UUID uuid, String publicHash, PublicKey publicKey) {
 		this.serverTrusted = serverTrusted;
