@@ -63,4 +63,11 @@ public class Message {
 				+ "<span style='color: black;'>" + content + "</span>" + "</p></html>";
 	}
 
+	public String toTooltipString() {
+		String serverDot = "<span style='color: " + (serverTrusted ? "green" : "red") + ";'>•</span>";
+		String clientDot = "<span style='color: " + (userTrusted ? "green" : "red") + ";'>•</span>";
+
+		return "<html><span style='color: #808080;'>User: </span><b>" + username + "</b><br><span style='color: #808080;'>Server: </span>" + serverDot + "<br><span style='color: #808080;'>Client: </span>" + clientDot + "</html>";
+	}
+
 }

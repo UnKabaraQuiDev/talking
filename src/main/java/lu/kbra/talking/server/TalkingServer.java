@@ -68,11 +68,13 @@ public class TalkingServer implements TalkingInstance {
 
 	public void incomingHandshake(TalkingServerClient sclient, S_UserData obj) {
 		sclient.setUserData(obj);
-		// sclient.getUserData().setCurrentChannelUuid(serverData.getDefaultChannelUuid());
+
 		Pair<Boolean, String> refusalReason = connectionManager.verify(sclient);
 		if (refusalReason.getKey()) {
 			GlobalLogger.info("Accepted connection: " + sclient.getUUID() + " = '" + sclient.getUserData().getUserName() + "' @ "
 					+ PCUtils.try_(() -> sclient.getSocketChannel().getRemoteAddress(), (e) -> e.getClass().getName() + ": " + e.getMessage()));
+
+			obj.verifyServerTrusted(serverData);
 
 			sclient.write(new S2C_LoginPacket(serverData.getClientView(obj)));
 			new C2S_S2C_ChangeChannelPacket().serverRead(sclient, TalkingServer.INSTANCE.getServerData().getDefaultChannelUuid()); // fake packet received from client

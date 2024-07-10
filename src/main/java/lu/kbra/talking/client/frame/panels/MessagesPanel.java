@@ -26,6 +26,7 @@ import lu.kbra.talking.client.data.C_RemoteUserData;
 import lu.kbra.talking.client.frame.data.Message;
 import lu.kbra.talking.client.frame.renderer.MessageCellRenderer;
 import lu.kbra.talking.packets.C2S_S2C_MessagePacket;
+import lu.kbra.talking.packets.C2S_AskServerTrustPacket;
 
 public class MessagesPanel extends JPanel {
 
@@ -46,15 +47,18 @@ public class MessagesPanel extends JPanel {
 		contextMenu = new JPopupMenu();
 		JMenuItem copyItem = new JMenuItem("Copy");
 		JMenuItem deleteItem = new JMenuItem("Delete (client)");
-		JMenuItem trustUserItem = new JMenuItem("Trust user");
+		JMenuItem userTrustUserItem = new JMenuItem("Trust user (client)");
+		JMenuItem serverTrustUserItem = new JMenuItem("Ask server trust");
 		contextMenu.add(copyItem);
 		contextMenu.add(deleteItem);
-		contextMenu.add(trustUserItem);
+		contextMenu.add(userTrustUserItem);
+		contextMenu.add(serverTrustUserItem);
 
 		// Add action listeners for menu items
 		copyItem.addActionListener(e -> copyMessage());
 		deleteItem.addActionListener(e -> deleteMessage());
-		trustUserItem.addActionListener(e -> addToTrustedUsersMessage());
+		userTrustUserItem.addActionListener(e -> addToTrustedUsersMessage());
+		serverTrustUserItem.addActionListener(e -> askServerTrust());
 
 		JButton sendButton = new JButton(">>");
 		sendButton.addActionListener(new ActionListener() {
@@ -88,6 +92,15 @@ public class MessagesPanel extends JPanel {
 		inputPanel.add(inputField, BorderLayout.CENTER);
 		inputPanel.add(sendButton, BorderLayout.EAST);
 		add(inputPanel, BorderLayout.SOUTH);
+	}
+
+	private void askServerTrust() {
+		Message selectedMessage = messagesList.getSelectedValue();
+		if (selectedMessage == null) {
+			return;
+		}
+		
+		TalkingClient.INSTANCE.getClient().write(C2S_AskServerTrustPacket.ask(selectedMessage.getSenderUuid()));
 	}
 
 	private void addToTrustedUsersMessage() {

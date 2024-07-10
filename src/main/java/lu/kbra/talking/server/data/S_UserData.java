@@ -74,4 +74,8 @@ public class S_UserData {
 		return new C_RemoteUserData(serverTrusted, sclient.getUUID(), publicHash, publicKey);
 	}
 
+	public void verifyServerTrusted(S_ServerData serverData) {
+		this.serverTrusted = serverData.isTrustedPublicKey(publicKey);
+	}
+
 }

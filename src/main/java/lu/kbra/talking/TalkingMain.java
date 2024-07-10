@@ -3,6 +3,7 @@ package lu.kbra.talking;
 import java.io.File;
 import java.io.IOException;
 
+import lu.pcy113.pclib.builder.ThreadBuilder;
 import lu.pcy113.pclib.logger.GlobalLogger;
 import lu.pcy113.pclib.logger.PCLogger;
 
@@ -46,6 +47,8 @@ public class TalkingMain {
 		case SERVER:
 			GlobalLogger.info("Starting server on: 0.0.0.0:" + port);
 			instance = new TalkingServer("0.0.0.0", port);
+
+			Runtime.getRuntime().addShutdownHook(ThreadBuilder.create(() -> TalkingServer.INSTANCE.getServerData().saveTrustedPublicKeys()).build());
 			break;
 		case CLIENT:
 			instance = new TalkingClient(port);

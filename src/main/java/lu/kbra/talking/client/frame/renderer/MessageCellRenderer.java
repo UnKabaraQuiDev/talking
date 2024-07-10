@@ -2,7 +2,6 @@ package lu.kbra.talking.client.frame.renderer;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.time.format.DateTimeFormatter;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -15,8 +14,6 @@ import lu.kbra.talking.client.frame.data.Message;
 public class MessageCellRenderer extends JPanel implements ListCellRenderer<Message> {
 
 	private JLabel label;
-
-	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	public MessageCellRenderer() {
 		setLayout(new BorderLayout());
@@ -34,6 +31,8 @@ public class MessageCellRenderer extends JPanel implements ListCellRenderer<Mess
 
 		label.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
 		label.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
+
+		this.setToolTipText(message.toTooltipString());
 
 		return this;
 	}
