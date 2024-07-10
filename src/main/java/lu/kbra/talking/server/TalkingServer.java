@@ -1,6 +1,7 @@
 package lu.kbra.talking.server;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import lu.pcy113.jbcodec.CodecManager;
@@ -60,7 +61,7 @@ public class TalkingServer implements TalkingInstance {
 
 		Packets.registerPackets(server.getPackets());
 
-		server.bind(new InetSocketAddress(host, port));
+		server.bind(new InetSocketAddress(InetAddress.getByName(host), port));
 		this.server.setAccepting();
 	}
 
