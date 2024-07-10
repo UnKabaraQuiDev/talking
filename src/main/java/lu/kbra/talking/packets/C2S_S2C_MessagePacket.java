@@ -95,7 +95,7 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, U
 
 	@Override
 	public Triplet<String, UUID, String> serverWrite(TalkingServerClient client) {
-		GlobalLogger.log("Sending: " + text + " from: " + client.getUserData().getUserName() + " to: " + client.getUUID() + "(" + client.getUserData().getUserName() + ")");
+		// GlobalLogger.log("Sending: " + text + " from: " + client.getUserData().getUserName() + " to: " + client.getUUID() + "(" + client.getUserData().getUserName() + ")");
 		return Triplets.readOnly(name, sender, text);
 	}
 

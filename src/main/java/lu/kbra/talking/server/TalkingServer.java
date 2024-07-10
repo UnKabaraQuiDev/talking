@@ -7,7 +7,6 @@ import java.net.InetSocketAddress;
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
-import lu.pcy113.p4j.socket.server.ClientManager;
 import lu.pcy113.p4j.socket.server.P4JServer;
 import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.datastructure.pair.Pair;
@@ -20,6 +19,7 @@ import lu.kbra.talking.consts.Packets;
 import lu.kbra.talking.packets.C2S_S2C_ChangeChannelPacket;
 import lu.kbra.talking.packets.S2C_LoginPacket;
 import lu.kbra.talking.packets.S2C_LoginRefusedPacket;
+import lu.kbra.talking.server.client.TalkingClientManager;
 import lu.kbra.talking.server.client.TalkingServerClient;
 import lu.kbra.talking.server.conn.ConnectionManager;
 import lu.kbra.talking.server.conn.verifier.VersionConnectionVerifier;
@@ -54,7 +54,7 @@ public class TalkingServer implements TalkingInstance {
 		this.connectionManager.registerVerifier(true, new VersionConnectionVerifier(Consts.VERSION));
 
 		this.server = new P4JServer(codec, encryption, compression);
-		this.server.setClientManager(new ClientManager(server, (socket) -> new TalkingServerClient(socket, this.server, this)));
+		this.server.setClientManager(new TalkingClientManager(this));
 
 		// this.server.setEventManager(new AsyncEventManager(false));
 		this.server.getEventManager().register(new DefaultServerListener());
