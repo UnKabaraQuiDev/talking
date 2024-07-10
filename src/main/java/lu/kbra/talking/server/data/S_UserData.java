@@ -9,8 +9,10 @@ import lu.kbra.talking.server.client.TalkingServerClient;
 
 public class S_UserData {
 
+	private boolean serverTrusted = false;
+
 	private final String userName;
-	private final String hash;
+	private final String publicHash;
 	private final String version;
 	private final PublicKey publicKey;
 
@@ -18,9 +20,26 @@ public class S_UserData {
 
 	public S_UserData(String userName, String hash, String version, PublicKey publicKey) {
 		this.userName = userName;
-		this.hash = hash;
+		this.publicHash = hash;
 		this.version = version;
 		this.publicKey = publicKey;
+	}
+
+	public S_UserData(boolean serverTrusted, String userName, String publicHash, String version, PublicKey publicKey, UUID currentChannelUuid) {
+		this.serverTrusted = serverTrusted;
+		this.userName = userName;
+		this.publicHash = publicHash;
+		this.version = version;
+		this.publicKey = publicKey;
+		this.currentChannelUuid = currentChannelUuid;
+	}
+
+	public void setServerTrusted(boolean serverTrusted) {
+		this.serverTrusted = serverTrusted;
+	}
+
+	public boolean isServerTrusted() {
+		return serverTrusted;
 	}
 
 	public String getVersion() {
@@ -31,8 +50,8 @@ public class S_UserData {
 		return userName;
 	}
 
-	public String getHash() {
-		return hash;
+	public String getPublicHash() {
+		return publicHash;
 	}
 
 	public PublicKey getPublicKey() {
@@ -52,7 +71,7 @@ public class S_UserData {
 	}
 
 	public C_RemoteUserData getRemoteUserData(TalkingServerClient sclient) {
-		return new C_RemoteUserData(sclient.getUUID(), publicKey);
+		return new C_RemoteUserData(serverTrusted, sclient.getUUID(), publicHash, publicKey);
 	}
 
 }

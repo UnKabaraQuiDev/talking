@@ -18,7 +18,7 @@ import lu.kbra.talking.consts.Consts;
 public class ConnectDialog extends JDialog {
 
 	private JTextField usernameField;
-	private JPasswordField passwordField;
+	private JPasswordField secretField;
 	private JTextField ipField;
 	private JTextField portField;
 	private JButton connectButton;
@@ -32,14 +32,14 @@ public class ConnectDialog extends JDialog {
 		JLabel usernameLabel = new JLabel("Username:");
 		usernameField = new JTextField();
 
-		JLabel passwordLabel = new JLabel("Password:");
-		passwordField = new JPasswordField();
+		JLabel secretLabel = new JLabel("Secret:");
+		secretField = new JPasswordField();
 
 		JLabel ipLabel = new JLabel("IP Address:");
 		ipField = new JTextField();
 
 		JLabel portLabel = new JLabel("Port (optional):");
-		portField = new JTextField();
+		portField = new JTextField(Integer.toString(Consts.DEFAULT_PORT));
 
 		connectButton = new JButton("Connect");
 		cancelButton = new JButton("Cancel");
@@ -60,8 +60,8 @@ public class ConnectDialog extends JDialog {
 
 		add(usernameLabel);
 		add(usernameField);
-		add(passwordLabel);
-		add(passwordField);
+		add(secretLabel);
+		add(secretField);
 		add(ipLabel);
 		add(ipField);
 		add(portLabel);
@@ -76,11 +76,11 @@ public class ConnectDialog extends JDialog {
 	private void connectToServer() {
 		String username = usernameField.getText().trim();
 		String ip = ipField.getText().trim();
-		String password = new String(passwordField.getPassword());
+		String password = new String(secretField.getPassword());
 		int port;
 
 		if (username.isEmpty() || ip.isEmpty() || password.isEmpty()) {
-			JOptionPane.showMessageDialog(this, "Username, password and IP Address are required.", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showConfirmDialog(this, "Username, password and IP Address are required.", "Error", JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 

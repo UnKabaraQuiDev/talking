@@ -22,7 +22,7 @@ public class S_UserDataEncoder extends DefaultObjectEncoder<S_UserData> {
 		super.putHeader(head, bb);
 
 		bb.put(cm.encode(false, obj.getUserName()));
-		bb.put(cm.encode(false, obj.getHash()));
+		bb.put(cm.encode(false, obj.getPublicHash()));
 		bb.put(cm.encode(true, obj.getVersion()));
 		bb.put(cm.encode(true, obj.getPublicKey()));
 
@@ -33,7 +33,7 @@ public class S_UserDataEncoder extends DefaultObjectEncoder<S_UserData> {
 
 	@Override
 	public int estimateSize(boolean head, S_UserData obj) {
-		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getUserName()) + cm.estimateSize(false, obj.getHash()) + cm.estimateSize(true, obj.getVersion()) + cm.estimateSize(true, obj.getPublicKey());
+		return super.estimateHeaderSize(head) + cm.estimateSize(false, obj.getUserName()) + cm.estimateSize(false, obj.getPublicHash()) + cm.estimateSize(true, obj.getVersion()) + cm.estimateSize(true, obj.getPublicKey());
 	}
 
 }

@@ -12,8 +12,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.pclib.datastructure.pair.Pair;
-import lu.pcy113.pclib.datastructure.pair.Pairs;
 import lu.pcy113.pclib.datastructure.triplet.Triplet;
 import lu.pcy113.pclib.datastructure.triplet.Triplets;
 import lu.pcy113.pclib.logger.GlobalLogger;
@@ -25,7 +23,11 @@ import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
 import lu.kbra.talking.server.TalkingServer;
 import lu.kbra.talking.server.client.TalkingServerClient;
 
-public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, UUID, String>>, S2C_Talking_Packet<Pair<String, String>> {
+/**
+ * C2S: channel, target, encoded text <br>
+ * S2C: user, target, encoded text
+ */
+public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, UUID, String>>, S2C_Talking_Packet<Triplet<String, UUID, String>> {
 
 	public C2S_S2C_MessagePacket() {
 	}
@@ -58,7 +60,7 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, U
 		final UUID channel = obj.getFirst();
 		final UUID targetRemote = obj.getSecond();
 
-		TalkingServer.INSTANCE.getServer().getClientManager().get(targetRemote).write(C2S_S2C_MessagePacket.s2c(sclient.getUserData().getUserName(), obj.getThird()));
+		TalkingServer.INSTANCE.getServer().getClientManager().get(targetRemote).write(C2S_S2C_MessagePacket.s2c(sclient.getUserData().getUserName(), sclient.getUUID(), obj.getThird()));
 	}
 
 	public static C2S_S2C_MessagePacket c2s(C_RemoteUserData remote, String rawText) {
@@ -68,34 +70,37 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, U
 	// S2C - - - - - -
 
 	private String name;
+	private UUID sender;
 
-	public C2S_S2C_MessagePacket(String name, String text) {
+	public C2S_S2C_MessagePacket(String name, UUID sender, String text) {
 		this.text = text;
+		this.sender = sender;
 		this.name = name;
 	}
 
 	@Override
-	public void clientRead(P4JClient client, Pair<String, String> obj) {
+	public void clientRead(P4JClient client, Triplet<String, UUID, String> obj) {
 		try {
-			final String username = obj.getKey();
-			final String content = obj.getValue();
+			final String username = obj.getFirst();
+			final String content = obj.getThird();
 
 			Cipher encryptCipher = Cipher.getInstance("RSA");
 			encryptCipher.init(Cipher.DECRYPT_MODE, TalkingClient.INSTANCE.getUserData().getPrivateKey());
-			TalkingClient.INSTANCE.getFrame().getMessagesPanel().addMessage(username, new String(encryptCipher.doFinal(Base64.getDecoder().decode(content.getBytes()))), false);
+
+			TalkingClient.INSTANCE.getFrame().getMessagesPanel().addMessage(username, obj.getSecond(), new String(encryptCipher.doFinal(Base64.getDecoder().decode(content.getBytes()))), false);
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public Pair<String, String> serverWrite(TalkingServerClient client) {
+	public Triplet<String, UUID, String> serverWrite(TalkingServerClient client) {
 		GlobalLogger.log("Sending: " + text + " from: " + client.getUserData().getUserName() + " to: " + client.getUUID() + "(" + client.getUserData().getUserName() + ")");
-		return Pairs.readOnly(name, text);
+		return Triplets.readOnly(name, sender, text);
 	}
 
-	public static C2S_S2C_MessagePacket s2c(String name, String text) {
-		return new C2S_S2C_MessagePacket(name, text);
+	public static C2S_S2C_MessagePacket s2c(String name, UUID sender, String text) {
+		return new C2S_S2C_MessagePacket(name, sender, text);
 	}
 
 }

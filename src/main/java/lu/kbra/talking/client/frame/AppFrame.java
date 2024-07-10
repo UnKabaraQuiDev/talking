@@ -65,6 +65,7 @@ public class AppFrame extends JFrame {
 	}
 
 	public void quitRequested() {
+		TalkingClient.INSTANCE.saveTrustedPublicKeys();
 		TalkingClient.INSTANCE.disconnect();
 		dispose();
 	}

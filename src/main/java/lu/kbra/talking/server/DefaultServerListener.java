@@ -41,6 +41,9 @@ public class DefaultServerListener implements EventListener {
 		TalkingServerClient sclient = (TalkingServerClient) event.getClient();
 		GlobalLogger.log("disconnected: " + sclient.getUUID());
 
+		if(!sclient.hasUserData())
+			return;
+		
 		TalkingServer.INSTANCE.getServer().broadcastIf(S2C_ChannelLeavePacket.disconnected(sclient.getUserData().getUserName()),
 				c -> ((TalkingServerClient) c).getUserData().getCurrentChannelUuid().equals(sclient.getUserData().getCurrentChannelUuid()));
 	}

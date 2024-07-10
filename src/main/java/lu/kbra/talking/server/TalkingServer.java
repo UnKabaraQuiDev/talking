@@ -58,6 +58,7 @@ public class TalkingServer implements TalkingInstance {
 
 		// this.server.setEventManager(new AsyncEventManager(false));
 		this.server.getEventManager().register(new DefaultServerListener());
+		this.server.getEventManager().setExceptionHandler(Exception::printStackTrace);
 
 		Packets.registerPackets(server.getPackets());
 
@@ -72,7 +73,7 @@ public class TalkingServer implements TalkingInstance {
 		if (refusalReason.getKey()) {
 			GlobalLogger.info("Accepted connection: " + sclient.getUUID() + " = '" + sclient.getUserData().getUserName() + "' @ "
 					+ PCUtils.try_(() -> sclient.getSocketChannel().getRemoteAddress(), (e) -> e.getClass().getName() + ": " + e.getMessage()));
-			
+
 			sclient.write(new S2C_LoginPacket(serverData.getClientView(obj)));
 			new C2S_S2C_ChangeChannelPacket().serverRead(sclient, TalkingServer.INSTANCE.getServerData().getDefaultChannelUuid()); // fake packet received from client
 		} else {

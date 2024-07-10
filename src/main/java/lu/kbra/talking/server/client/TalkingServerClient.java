@@ -29,5 +29,9 @@ public class TalkingServerClient extends ServerClient {
 	public TalkingServer getTalkingServer() {
 		return server;
 	}
-	
+
+	public boolean hasUserData() {
+		return userData != null;
+	}
+
 }

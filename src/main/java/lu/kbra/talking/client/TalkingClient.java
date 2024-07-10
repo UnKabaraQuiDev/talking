@@ -1,12 +1,25 @@
 package lu.kbra.talking.client;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
@@ -17,6 +30,7 @@ import lu.pcy113.pclib.PCUtils;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
+import lu.kbra.talking.client.data.C_RemoteUserData;
 import lu.kbra.talking.client.data.C_ServerData;
 import lu.kbra.talking.client.data.C_UserData;
 import lu.kbra.talking.client.frame.AppFrame;
@@ -45,6 +59,8 @@ public class TalkingClient implements TalkingInstance {
 
 	private AppFrame frame;
 
+	private Set<PublicKey> trustedPublicKeys;
+
 	public TalkingClient(int localPort) throws IOException {
 		INSTANCE = this;
 
@@ -55,6 +71,8 @@ public class TalkingClient implements TalkingInstance {
 		compression = CompressionManager.raw();
 
 		this.frame = new AppFrame();
+
+		this.loadTrustedPublicKeys();
 	}
 
 	private void createClient() {
@@ -92,9 +110,10 @@ public class TalkingClient implements TalkingInstance {
 			return;
 		}
 
-		final String hash = PCUtils.hashString(username + password, "SHA-256");
-		KeyPair keys = genKeys(hash.getBytes());
-		this.userData = new C_UserData(username, hash, Consts.VERSION, keys.getPublic(), keys.getPrivate());
+		final String privateHash = PCUtils.hashString(username + password, "SHA-256");
+		KeyPair keys = genKeys(privateHash.getBytes());
+		final String publicHash = PCUtils.hashString(username + keys.getPublic().getEncoded(), "SHA-256");
+		this.userData = new C_UserData(username, publicHash, Consts.VERSION, keys.getPublic(), keys.getPrivate());
 		System.out.println("User data: " + userData);
 
 		this.remoteHost = host;
@@ -148,6 +167,61 @@ public class TalkingClient implements TalkingInstance {
 
 	public boolean isConnected() {
 		return client != null && client.getClientStatus().equals(ClientStatus.LISTENING);
+	}
+
+	private void loadTrustedPublicKeys() {
+		try {
+			File file = new File("./config/trusted.txt");
+
+			trustedPublicKeys = new HashSet<PublicKey>();
+			if (!file.exists()) {
+				file.createNewFile();
+				return;
+			} else {
+				List<String> lines = Files.readAllLines(Paths.get(file.getPath()));
+				for (String str : lines) {
+					byte[] keyBytes = Base64.getDecoder().decode(str.trim());
+					X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+					KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+					trustedPublicKeys.add(keyFactory.generatePublic(keySpec));
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void saveTrustedPublicKeys() {
+		try {
+			File file = new File("./config/trusted.txt");
+
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			List<String> lines = new ArrayList<String>(trustedPublicKeys.size());
+			for (PublicKey pk : trustedPublicKeys) {
+				byte[] keyBytes = pk.getEncoded();
+				String keyString = Base64.getEncoder().encodeToString(keyBytes);
+				lines.add(keyString);
+			}
+
+			Files.write(Paths.get(file.getPath()), lines);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public boolean isClientTrusted(C_RemoteUserData u) {
+		return trustedPublicKeys.contains(u.getPublicKey());
+	}
+
+	public void addClientTrusted(UUID from) {
+		Optional<C_RemoteUserData> remoteUser = serverData.getRemoteUsers().stream().filter((c) -> c.getUUID().equals(from)).findAny();
+		if (remoteUser.isPresent()) {
+			trustedPublicKeys.add(remoteUser.get().getPublicKey());
+			System.out.println("Added user: " + from + " to trusted users");
+		}
 	}
 
 }

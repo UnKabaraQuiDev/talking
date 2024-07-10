@@ -13,11 +13,13 @@ public class C_RemoteUserDataDecoder extends DefaultObjectDecoder<C_RemoteUserDa
 	@Override
 	public C_RemoteUserData decode(boolean head, ByteBuffer bb) {
 		super.verifyHeader(head, bb);
-		
+
+		boolean serverTrusted = cm.getDecoderByClass(Boolean.class).decode(false, bb);
 		UUID uuid = cm.getDecoderByClass(UUID.class).decode(false, bb);
+		String publicHash = cm.getDecoderByClass(String.class).decode(false, bb);
 		PublicKey pk = (PublicKey) cm.decode(bb);
 
-		return new C_RemoteUserData(uuid, pk);
+		return new C_RemoteUserData(serverTrusted, uuid, publicHash, pk);
 	}
 
 }
