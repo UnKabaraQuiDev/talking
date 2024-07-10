@@ -119,6 +119,7 @@
 						<argument>-cp</argument>
 						<classpath />
 						<argument>-Djava.net.preferIPv4Stack=true</argument>
+						<argument>-Djavax.net.debug=all</argument>
 						<argument>lu.kbra.talking.TalkingMain</argument>
 						<argument>${exec.type}</argument>
 						<!--<argument>8000</argument>-->

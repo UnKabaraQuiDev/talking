@@ -15,8 +15,6 @@ public class TalkingMain {
 	private static TalkingInstance instance;
 
 	public static void main(String[] args) throws IOException {
-		System.setProperty("java.net.preferIPv4Stack", "true");
-
 		try {
 			PCLogger.exportDefaultConfig("./config/logs.properties");
 			GlobalLogger.init(new File("./config/logs.properties"));
