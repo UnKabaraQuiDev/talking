@@ -1,7 +1,6 @@
 package lu.kbra.talking.packets;
 
 import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingMain;
 import lu.kbra.talking.client.TalkingClient;
@@ -29,7 +28,7 @@ public class S2C_LoginPacket implements S2C_Talking_Packet<C_ServerData> {
 	@Override
 	public void clientRead(P4JClient client, C_ServerData obj) {
 		((TalkingClient) TalkingMain.getInstance()).setServerDataView(obj);
-		GlobalLogger.info("Successfull login: " + obj.getChannels());
+		System.out.println("Successfull login: " + obj.getChannels());
 		AppFrame.INSTANCE.getChannelsPanel().updateList();
 	}
 

@@ -1,14 +1,22 @@
 package lu.kbra.talking.server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.json.JSONObject;
 
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.p4j.compress.CompressionManager;
 import lu.pcy113.p4j.crypto.EncryptionManager;
 import lu.pcy113.p4j.socket.server.P4JServer;
 import lu.pcy113.pclib.PCUtils;
+import lu.pcy113.pclib.builder.ThreadBuilder;
 import lu.pcy113.pclib.datastructure.pair.Pair;
 import lu.pcy113.pclib.logger.GlobalLogger;
 
@@ -47,7 +55,10 @@ public class TalkingServer implements TalkingInstance {
 		encryption = EncryptionManager.raw();
 		compression = CompressionManager.raw();
 
-		this.serverData = new S_ServerData("test0", "test1");
+		if (!loadServerData()) {
+			GlobalLogger.severe("Stopping.");
+			return;
+		}
 
 		this.connectionManager = new ConnectionManager();
 		// this.connectionManager.registerVerifier(true, new BlacklistConnectionVerifier("./config/blacklist.json"));
@@ -58,12 +69,47 @@ public class TalkingServer implements TalkingInstance {
 
 		// this.server.setEventManager(new AsyncEventManager(false));
 		this.server.getEventManager().register(new DefaultServerListener());
-		this.server.getEventManager().setExceptionHandler(Exception::printStackTrace);
+		this.server.getEventManager().setExceptionHandler(GlobalLogger::severe);
 
 		Packets.registerPackets(server.getPackets());
 
 		server.bind(new InetSocketAddress(InetAddress.getByName(host), port));
 		this.server.setAccepting();
+
+		Runtime.getRuntime().addShutdownHook(ThreadBuilder.create(() -> TalkingServer.INSTANCE.getServerData().saveTrustedPublicKeys()).build());
+	}
+
+	private boolean loadServerData() {
+		try {
+			final File dataFile = new File("./config/serverdata.json");
+
+			if (!dataFile.exists()) {
+				dataFile.createNewFile();
+				Files.write(Paths.get(dataFile.getPath()), "{\"defaultChannel\": \"\", \"channels\": []}".getBytes());
+				GlobalLogger.info("Created ServerData configuration file, please fill it.");
+				return false;
+			}
+
+			final JSONObject config = new JSONObject(new String(Files.readAllBytes(Paths.get(dataFile.getPath()))));
+
+			if (config.getJSONArray("channels").isEmpty()) {
+				GlobalLogger.info("No channel configured.");
+				return false;
+			}
+
+			if (!config.has("defaultChannel") || config.getString("defaultChannel") == null || config.getString("defaultChannel").trim().isEmpty()) {
+				GlobalLogger.info("No default channel configured.");
+				return false;
+			}
+
+			this.serverData = new S_ServerData(config.getJSONArray("channels").toList().stream().map(Objects::toString).distinct().collect(Collectors.toList()));
+			this.serverData.setDefaultChannel(this.serverData.getChannelByName(config.getString("defaultChannel")));
+
+			return true;
+		} catch (IOException e) {
+			GlobalLogger.severe(e);
+			return false;
+		}
 	}
 
 	public void incomingHandshake(TalkingServerClient sclient, S_UserData obj) {

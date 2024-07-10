@@ -20,29 +20,27 @@ public class DefaultServerListener implements EventListener {
 	public void onConnect(ClientConnectedEvent event) {
 		TalkingServerClient sclient = (TalkingServerClient) event.getClient();
 
-		GlobalLogger.log("connected: " + sclient.getUUID());
+		GlobalLogger.log("Client connected: " + sclient.getUUID());
 	}
 
 	@EventHandler
 	public void onPacketRead(C2SReadPacketEvent event) {
-		GlobalLogger.log("read: " + event.getPacketClass());
 		if (event.hasFailed()) {
-			event.getException().printStackTrace();
+			GlobalLogger.severe(event.getException());
 		}
 	}
 
 	@EventHandler
 	public void onPacketWrite(S2CWritePacketEvent event) {
-		GlobalLogger.log("wrote: " + event.getPacket().getClass());
 		if (event.hasFailed()) {
-			event.getException().printStackTrace();
+			GlobalLogger.severe(event.getException());
 		}
 	}
 
 	@EventHandler
 	public void onDisconnect(ClosedSocketEvent event) {
 		TalkingServerClient sclient = (TalkingServerClient) event.getClient();
-		GlobalLogger.log("disconnected: " + sclient.getUUID());
+		GlobalLogger.log("Client disconnected: " + sclient.getUUID() + " (" + (sclient.hasUserData() ? "logged in" : "not logged in") + ")");
 
 		if (!sclient.hasUserData())
 			return;

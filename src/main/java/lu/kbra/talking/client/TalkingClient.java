@@ -27,7 +27,6 @@ import lu.pcy113.p4j.crypto.EncryptionManager;
 import lu.pcy113.p4j.socket.client.ClientStatus;
 import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.PCUtils;
-import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.TalkingInstance;
 import lu.kbra.talking.client.data.C_RemoteUserData;
@@ -77,7 +76,9 @@ public class TalkingClient implements TalkingInstance {
 
 	private void createClient() {
 		client = new P4JClient(codec, encryption, compression);
+		this.client.setExceptionConsumer(Exception::printStackTrace);
 		this.client.getEventManager().register(new DefaultClientListener());
+		this.client.getEventManager().setExceptionHandler(Exception::printStackTrace);
 		Packets.registerPackets(client.getPackets());
 	}
 
@@ -129,7 +130,7 @@ public class TalkingClient implements TalkingInstance {
 		System.out.println("connecting to: " + Inet4Address.getByName(remoteHost));
 		client.connect(new InetSocketAddress(Inet4Address.getByName(remoteHost), remotePort));
 
-		GlobalLogger.log("Public key: " + PCUtils.byteArrayToHexString(userData.getPublicKey().getEncoded()));
+		System.out.println("Public key: " + PCUtils.byteArrayToHexString(userData.getPublicKey().getEncoded()));
 		client.write(new C2S_HandshakePacket(userData.getPublicUserData()));
 	}
 

@@ -14,7 +14,6 @@ import javax.crypto.NoSuchPaddingException;
 import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.datastructure.triplet.Triplet;
 import lu.pcy113.pclib.datastructure.triplet.Triplets;
-import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.client.data.C_RemoteUserData;
@@ -49,6 +48,7 @@ public class C2S_S2C_MessagePacket implements C2S_Talking_Packet<Triplet<UUID, U
 		try {
 			Cipher encryptCipher = Cipher.getInstance("RSA");
 			encryptCipher.init(Cipher.ENCRYPT_MODE, remotePublicKey);
+			
 			return Triplets.readOnly(TalkingClient.INSTANCE.getServerData().getCurrentChannelUuid(), remoteTarget, Base64.getEncoder().encodeToString(encryptCipher.doFinal(text.getBytes())));
 		} catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException | BadPaddingException e) {
 			throw new RuntimeException(e);

@@ -29,16 +29,19 @@ public class S_ServerData {
 
 	private Set<PublicKey> trustedPublicKeys = new HashSet<>();
 
-	public S_ServerData(List<Channel> channels) {
-		this.channels = channels.stream().collect(Collectors.toMap(Channel::getName, a -> a));
-		this.defaultChannelUuid = channels.get(0).getUuid();
+	public S_ServerData(String... strings) {
+		this.channels = new HashMap<String, Channel>();
+		for (String s : strings) {
+			this.channels.put(s, new Channel(s, UUID.randomUUID()));
+		}
+		this.defaultChannelUuid = channels.values().iterator().next().getUuid();
 
 		loadTrustedPublicKeys();
 	}
 
-	public S_ServerData(String... strings) {
+	public S_ServerData(List<String> channelNames) {
 		this.channels = new HashMap<String, Channel>();
-		for (String s : strings) {
+		for (String s : channelNames) {
 			this.channels.put(s, new Channel(s, UUID.randomUUID()));
 		}
 		this.defaultChannelUuid = channels.values().iterator().next().getUuid();
@@ -127,6 +130,10 @@ public class S_ServerData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Channel getChannelByName(String name) {
+		return channels.get(name);
 	}
 
 }

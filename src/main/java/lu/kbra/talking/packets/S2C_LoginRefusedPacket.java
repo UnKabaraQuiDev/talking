@@ -1,7 +1,6 @@
 package lu.kbra.talking.packets;
 
 import lu.pcy113.p4j.socket.client.P4JClient;
-import lu.pcy113.pclib.logger.GlobalLogger;
 
 import lu.kbra.talking.client.TalkingClient;
 import lu.kbra.talking.packets.impl.S2C_Talking_Packet;
@@ -25,7 +24,7 @@ public class S2C_LoginRefusedPacket implements S2C_Talking_Packet<String> {
 
 	@Override
 	public void clientRead(P4JClient client, String obj) {
-		GlobalLogger.info("Login refused: " + obj);
+		System.out.println("Login refused: " + obj);
 		TalkingClient.INSTANCE.getClient().disconnect();
 	}
 
