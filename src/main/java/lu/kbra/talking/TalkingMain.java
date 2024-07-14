@@ -3,6 +3,7 @@ package lu.kbra.talking;
 import java.io.File;
 import java.io.IOException;
 
+import lu.pcy113.pclib.builder.ThreadBuilder;
 import lu.pcy113.pclib.logger.GlobalLogger;
 import lu.pcy113.pclib.logger.PCLogger;
 
@@ -34,6 +35,8 @@ public class TalkingMain {
 			port = Integer.parseInt(args[1]);
 		}
 
+		final int finalPort = port;
+
 		switch (type) {
 		case SERVER:
 			try {
@@ -44,8 +47,28 @@ public class TalkingMain {
 				return;
 			}
 
-			GlobalLogger.info("Starting server on: 0.0.0.0:" + port);
-			instance = new TalkingServer("0.0.0.0", port);
+			GlobalLogger.info("Starting server on: 0.0.0.0:" + finalPort);
+			instance = new TalkingServer("0.0.0.0", finalPort);
+
+//			new java.util.Timer().schedule(new java.util.TimerTask() {
+//				@Override
+//				public void run() {
+//					TalkingServer.INSTANCE.stop();
+//				}
+//			}, 5000);
+
+			ThreadBuilder.create(() -> {
+				while (TalkingServer.INSTANCE.shouldRun()) {
+					if (!TalkingServer.INSTANCE.getServer().isAlive()) {
+						GlobalLogger.info("Restarting server on: 0.0.0.0:" + finalPort);
+						try {
+							instance = new TalkingServer("0.0.0.0", finalPort);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}).daemon(true).name("TalkingServer - Watchdog").start();
 			break;
 		case CLIENT:
 			instance = new TalkingClient(port);

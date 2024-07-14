@@ -46,6 +46,8 @@ public class TalkingServer implements TalkingInstance {
 
 	private ConnectionManager connectionManager;
 
+	private boolean shouldRun = true;
+
 	private S_ServerData serverData;
 
 	public TalkingServer(String host, int port) throws IOException {
@@ -137,6 +139,17 @@ public class TalkingServer implements TalkingInstance {
 
 	public S_ServerData getServerData() {
 		return serverData;
+	}
+
+	public void stop() {
+		shouldRun = false;
+		server.disconnectAll();
+		server.close();
+		GlobalLogger.info("Stopped.");
+	}
+
+	public boolean shouldRun() {
+		return shouldRun;
 	}
 
 }
