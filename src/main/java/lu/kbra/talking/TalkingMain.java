@@ -57,6 +57,7 @@ public class TalkingMain {
 //				}
 //			}, 5000);
 
+			// starting server watchdog thread
 			ThreadBuilder.create(() -> {
 				while (TalkingServer.INSTANCE.shouldRun()) {
 					if (!TalkingServer.INSTANCE.getServer().isAlive()) {
