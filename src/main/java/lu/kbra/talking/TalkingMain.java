@@ -65,8 +65,13 @@ public class TalkingMain {
 						try {
 							instance = new TalkingServer("0.0.0.0", finalPort);
 						} catch (IOException e) {
-							e.printStackTrace();
+							GlobalLogger.log(e);
 						}
+					}
+					try {
+						Thread.sleep(30_000);
+					} catch (Exception e) {
+						GlobalLogger.log(e);
 					}
 				}
 			}).daemon(true).name("TalkingServer - Watchdog").start();
