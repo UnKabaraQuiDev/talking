@@ -2,7 +2,7 @@ package lu.kbra.talking.client;
 
 import lu.pcy113.p4j.events.C2SReadPacketEvent;
 import lu.pcy113.p4j.events.ClientConnectedEvent;
-import lu.pcy113.p4j.events.ClosedSocketEvent;
+import lu.pcy113.p4j.events.ClientDisconnectedEvent;
 import lu.pcy113.p4j.events.S2CWritePacketEvent;
 import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.listener.EventHandler;
@@ -30,7 +30,7 @@ public class DefaultClientListener implements EventListener {
 	}
 
 	@EventHandler
-	public void onDisconnect(ClosedSocketEvent event) {
+	public void onDisconnect(ClientDisconnectedEvent event) {
 		System.out.println("disconnected: " + ((P4JClient) event.getClient()));
 	}
 

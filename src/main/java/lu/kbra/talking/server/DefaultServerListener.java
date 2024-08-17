@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import lu.pcy113.p4j.events.C2SReadPacketEvent;
 import lu.pcy113.p4j.events.ClientConnectedEvent;
-import lu.pcy113.p4j.events.ClosedSocketEvent;
+import lu.pcy113.p4j.events.ClientDisconnectedEvent;
 import lu.pcy113.p4j.events.S2CWritePacketEvent;
 import lu.pcy113.pclib.listener.EventHandler;
 import lu.pcy113.pclib.listener.EventListener;
@@ -38,7 +38,7 @@ public class DefaultServerListener implements EventListener {
 	}
 
 	@EventHandler
-	public void onDisconnect(ClosedSocketEvent event) {
+	public void onDisconnect(ClientDisconnectedEvent event) {
 		TalkingServerClient sclient = (TalkingServerClient) event.getClient();
 		GlobalLogger.log("Client disconnected: " + sclient.getUUID() + " (" + (sclient.hasUserData() ? "logged in" : "not logged in") + ")");
 
