@@ -1,9 +1,9 @@
 package lu.kbra.talking.client;
 
 import lu.pcy113.p4j.events.C2SReadPacketEvent;
-import lu.pcy113.p4j.events.ClientConnectedEvent;
-import lu.pcy113.p4j.events.ClientDisconnectedEvent;
 import lu.pcy113.p4j.events.S2CWritePacketEvent;
+import lu.pcy113.p4j.events.client.ClientConnectedEvent;
+import lu.pcy113.p4j.events.client.ClientDisconnectedEvent;
 import lu.pcy113.p4j.socket.client.P4JClient;
 import lu.pcy113.pclib.listener.EventHandler;
 import lu.pcy113.pclib.listener.EventListener;
