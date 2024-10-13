@@ -2,12 +2,12 @@ package lu.kbra.talking.consts;
 
 import lu.pcy113.jbcodec.CodecManager;
 import lu.pcy113.jbcodec.decoder.ArrayListDecoder;
-import lu.pcy113.jbcodec.decoder.HashMapDecoder;
+import lu.pcy113.jbcodec.decoder.SingleHashMapDecoder;
 import lu.pcy113.jbcodec.decoder.PairDecoder;
 import lu.pcy113.jbcodec.decoder.TripletDecoder;
 import lu.pcy113.jbcodec.decoder.UUIDDecoder;
 import lu.pcy113.jbcodec.encoder.ArrayListEncoder;
-import lu.pcy113.jbcodec.encoder.HashMapEncoder;
+import lu.pcy113.jbcodec.encoder.SingleHashMapEncoder;
 import lu.pcy113.jbcodec.encoder.PairEncoder;
 import lu.pcy113.jbcodec.encoder.TripletEncoder;
 import lu.pcy113.jbcodec.encoder.UUIDEncoder;
@@ -28,7 +28,7 @@ public class Codecs {
 	public static CodecManager instance() {
 		CodecManager codec = CodecManager.base();
 
-		codec.register(new HashMapEncoder(), new HashMapDecoder(), (short) 11);
+		codec.register(new SingleHashMapEncoder(), new SingleHashMapDecoder(), (short) 11);
 		codec.register(new UUIDEncoder(), new UUIDDecoder(), (short) 12);
 		codec.register(new PairEncoder(), new PairDecoder(), (short) 13);
 		codec.register(new TripletEncoder(), new TripletDecoder(), (short) 14);

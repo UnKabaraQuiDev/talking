@@ -2,10 +2,10 @@ package lu.kbra.talking.server;
 
 import java.util.Arrays;
 
-import lu.pcy113.p4j.events.C2SReadPacketEvent;
-import lu.pcy113.p4j.events.S2CWritePacketEvent;
-import lu.pcy113.p4j.events.client.ClientConnectedEvent;
-import lu.pcy113.p4j.events.client.ClientDisconnectedEvent;
+import lu.pcy113.p4j.events.client.P4JConnectionEvent.ClientConnectedEvent;
+import lu.pcy113.p4j.events.client.P4JConnectionEvent.ClientDisconnectedEvent;
+import lu.pcy113.p4j.events.packets.PacketEvent.ReadFailedPacketEvent;
+import lu.pcy113.p4j.events.packets.PacketEvent.WriteFailedPacketEvent;
 import lu.pcy113.pclib.listener.EventHandler;
 import lu.pcy113.pclib.listener.EventListener;
 import lu.pcy113.pclib.logger.GlobalLogger;
@@ -24,17 +24,13 @@ public class DefaultServerListener implements EventListener {
 	}
 
 	@EventHandler
-	public void onPacketRead(C2SReadPacketEvent event) {
-		if (event.hasFailed()) {
-			GlobalLogger.severe(event.getException());
-		}
+	public void onPacketRead(ReadFailedPacketEvent event) {
+		GlobalLogger.severe(event.getException());
 	}
 
 	@EventHandler
-	public void onPacketWrite(S2CWritePacketEvent event) {
-		if (event.hasFailed()) {
-			GlobalLogger.severe(event.getException());
-		}
+	public void onPacketWrite(WriteFailedPacketEvent event) {
+		GlobalLogger.severe(event.getException());
 	}
 
 	@EventHandler
