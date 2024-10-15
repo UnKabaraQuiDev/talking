@@ -1,14 +1,14 @@
 package lu.kbra.talking.consts;
 
 import lu.pcy113.jbcodec.CodecManager;
-import lu.pcy113.jbcodec.decoder.ArrayListDecoder;
-import lu.pcy113.jbcodec.decoder.SingleHashMapDecoder;
 import lu.pcy113.jbcodec.decoder.PairDecoder;
+import lu.pcy113.jbcodec.decoder.SingleArrayListDecoder;
+import lu.pcy113.jbcodec.decoder.SingleHashMapDecoder;
 import lu.pcy113.jbcodec.decoder.TripletDecoder;
 import lu.pcy113.jbcodec.decoder.UUIDDecoder;
-import lu.pcy113.jbcodec.encoder.ArrayListEncoder;
-import lu.pcy113.jbcodec.encoder.SingleHashMapEncoder;
 import lu.pcy113.jbcodec.encoder.PairEncoder;
+import lu.pcy113.jbcodec.encoder.SingleArrayListEncoder;
+import lu.pcy113.jbcodec.encoder.SingleHashMapEncoder;
 import lu.pcy113.jbcodec.encoder.TripletEncoder;
 import lu.pcy113.jbcodec.encoder.UUIDEncoder;
 
@@ -32,7 +32,7 @@ public class Codecs {
 		codec.register(new UUIDEncoder(), new UUIDDecoder(), (short) 12);
 		codec.register(new PairEncoder(), new PairDecoder(), (short) 13);
 		codec.register(new TripletEncoder(), new TripletDecoder(), (short) 14);
-		codec.register(new ArrayListEncoder(), new ArrayListDecoder(), (short) 15);
+		codec.register(new SingleArrayListEncoder(), new SingleArrayListDecoder(), (short) 15);
 
 		codec.register(new S_UserDataEncoder(), new S_UserDataDecoder(), (short) 20);
 		codec.register(new C_ServerDataEncoder(), new C_ServerDataDecoder(), (short) 21);
